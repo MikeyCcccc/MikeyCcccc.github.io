@@ -236,4 +236,28 @@
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') overlay.classList.remove('open');
   });
+
+  // 横屏引导提示：可关闭，localStorage 记住选择
+  (function () {
+    var tip = document.getElementById('rotateTip');
+    var close = document.getElementById('rotateTipClose');
+    if (!tip || !close) return;
+    var KEY = 'chenRotateTipDismissed';
+    try { if (localStorage.getItem(KEY) === '1') tip.classList.add('hidden'); } catch (e) {}
+    close.addEventListener('click', function () {
+      tip.classList.add('hidden');
+      try { localStorage.setItem(KEY, '1'); } catch (e) {}
+    });
+  })();
+
+  // 横竖屏切换：让所有 ScrollTrigger 重新测量（布局断点变化后必须 refresh）
+  var rzTimer = null;
+  function refreshOnRotate() {
+    clearTimeout(rzTimer);
+    rzTimer = setTimeout(function () {
+      if (window.ScrollTrigger) ScrollTrigger.refresh();
+    }, 250);
+  }
+  window.addEventListener('orientationchange', refreshOnRotate);
+  window.addEventListener('resize', refreshOnRotate);
 })();

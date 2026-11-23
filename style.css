@@ -344,3 +344,70 @@ button{font-family:inherit}
 @media(max-width:520px){
   .role-grid,.partners{grid-template-columns:1fr}
 }
+
+/* 横屏引导提示：仅竖屏小屏显示，可关闭 */
+.rotate-tip{display:none}
+@media(max-width:860px) and (orientation:portrait){
+  .rotate-tip{display:flex;align-items:center;gap:.55rem;position:fixed;z-index:45;
+    left:50%;bottom:1rem;transform:translateX(-50%);
+    background:rgba(29,29,31,.92);color:#fff;border:1px solid rgba(255,255,255,.22);
+    border-radius:100px;padding:.55rem .7rem .55rem .9rem;
+    font-family:var(--sans);font-size:.78rem;letter-spacing:.03em;white-space:nowrap;
+    box-shadow:0 8px 24px rgba(0,0,0,.3);backdrop-filter:blur(8px);
+    transition:opacity .35s,transform .35s}
+  .rotate-tip-icon{width:18px;height:18px;flex:none;color:var(--mint)}
+  .rotate-tip-close{border:0;background:rgba(255,255,255,.14);color:#fff;cursor:pointer;
+    width:22px;height:22px;border-radius:50%;line-height:1;font-size:.7rem;margin-left:.15rem;
+    display:flex;align-items:center;justify-content:center;padding:0}
+  .rotate-tip.hidden{opacity:0;transform:translate(-50%,1rem);pointer-events:none}
+}
+
+/* 横屏手机解锁桌面级布局（矮屏 landscape，避开普通桌面） */
+@media(orientation:landscape) and (max-height:560px) and (min-width:600px){
+  .hero-inner h1{font-size:clamp(3rem,10vh,5.5rem)}
+  .wrap{padding:3.5rem var(--pad)}
+  .sec-title{font-size:clamp(2rem,7vh,3.6rem)}
+  /* 剧场：恢复左右双栏 */
+  .theater{height:340vh}
+  .theater-grid{grid-template-columns:1.35fr .65fr;grid-template-rows:auto;gap:1.5rem;
+    padding-top:calc(var(--nav-h) + 1vh)}
+  .theater-copy{justify-content:center}
+  .theater-top{justify-content:flex-start;gap:.7em;letter-spacing:.18em;font-size:1.05rem}
+  .theater-mid{margin:1.2rem 0}
+  .theater-big{font-size:clamp(2.8rem,9vh,6rem)}
+  .theater-visual{min-height:0}
+  /* 杂志墙：恢复四列三行 */
+  .media-grid{grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,clamp(90px,20vh,150px));
+    border-top:0;border-left:0}
+  .gcell,.gcell--tr,.font-6,.gcell--bl,.font-5{border-right:0;border-bottom:0}
+  .gcell--tr,.font-6{border-right:0}
+  .gcell--bl,.font-5,.font-6{border-bottom:0}
+  .gcell--tr{grid-column:4;grid-row:1/3}
+  .gcell--bl{grid-column:1/3;grid-row:2/4}
+  .gcell--title{grid-column:auto!important;grid-row:auto!important}
+  .gcell-duo video:nth-child(3){display:block}
+  .font-1{font-size:clamp(1.4rem,4.5vh,2.6rem)}
+  .font-2{font-size:clamp(1.3rem,4vh,2.4rem)}
+  .font-3{font-size:clamp(1rem,3vh,1.7rem)}
+  .font-4{font-size:clamp(1rem,3vh,1.7rem)}
+  .font-5{font-size:clamp(1.2rem,3.6vh,2.2rem)}
+  .font-6{font-size:clamp(1.1rem,3.4vh,2rem)}
+  /* 街舞：恢复三列 + SVG 环绕文字 */
+  .dance-orbit{display:block}
+  .dance-orbit-mobile{display:none}
+  .dance-grid{grid-template-columns:repeat(3,1fr)}
+  /* 作品：恢复两列 */
+  .role-grid{grid-template-columns:repeat(2,1fr)}
+  .role-grid .role:nth-child(even){margin-top:1.2rem}
+  /* 教育：恢复三栏 */
+  .edu{padding-top:4rem}
+  .edu-headline{font-size:clamp(1.8rem,6vh,3.4rem)}
+  .edu-stage{grid-template-columns:minmax(80px,1fr) minmax(200px,1.3fr) minmax(80px,1fr);
+    min-height:88vh;margin-top:1.5rem}
+  .edu-repeat{flex-direction:column;flex-wrap:nowrap;font-size:clamp(1rem,3.6vh,2rem)}
+  .edu-repeat--right{text-align:right;transform:translateY(3rem)}
+  .edu-photo{width:min(100%,300px);transform:rotate(-6deg)}
+  /* 页脚下压：横屏高度有限 */
+  .footer{padding:3.5rem var(--pad) 2rem}
+  .footer h2{font-size:clamp(2rem,9vh,4rem)}
+}
