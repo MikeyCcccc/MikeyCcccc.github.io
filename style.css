@@ -183,8 +183,8 @@ button{font-family:inherit}
 .dance-orbit-mobile{display:none}
 .dance-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.2rem;margin-top:2rem}
 .dance-card{position:relative;overflow:hidden;aspect-ratio:4/5;background:#222}
-.dance-card img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
-.dance-card:hover img{transform:scale(1.06)}
+.dance-card img,.dance-card video{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s ease}
+.dance-card:hover img,.dance-card:hover video{transform:scale(1.06)}
 .dance-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
   background:rgba(29,29,31,.62);color:var(--mint);font-size:.85rem;letter-spacing:.06em;
   text-align:center;padding:1rem;border:1px dashed rgba(191,227,216,.5)}
@@ -369,6 +369,13 @@ button{font-family:inherit}
   .gcell--title.font-6{grid-column:2!important;grid-row:4!important}
   .gcell--title.font-3{grid-column:1!important;grid-row:5!important}
   .gcell--title.font-5{grid-column:2!important;grid-row:5!important}
+  /* 竖屏舞蹈网格 2 列：第二行 gif 与静态图调换（photo2 左 / dance2 右） */
+  .dance-grid>.dance-card:nth-child(1){order:1}
+  .dance-grid>.dance-card:nth-child(2){order:2}
+  .dance-grid>.dance-card:nth-child(3){order:4}
+  .dance-grid>.dance-card:nth-child(4){order:3}
+  .dance-grid>.dance-card:nth-child(5){order:5}
+  .dance-grid>.dance-card:nth-child(6){order:6}
 }
 @media(max-width:520px){
   .role-grid,.partners{grid-template-columns:minmax(0,1fr)}

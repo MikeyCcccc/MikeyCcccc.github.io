@@ -70,34 +70,54 @@ document.documentElement.classList.add('js');
   // nav 小字"陈翰霖"保持隐藏，由 hero 大标题缩小飞到左上角接管该位置
   gsap.set('#brandName', { opacity: 0 });
 
-  // 视频统一懒加载：进入视口前只显示 poster，不下载 mp4（首屏省约 15MB）
-  // 首次进入视口才赋 src 并播放；离开视口暂停以省流量/电量
+  // 视频加载：两级观察器，先把"下载缓冲"和"进入视口播放"分离，避免滚动到才下载导致卡几秒
+  // 1) 预加载观察器：距离视口 900px 就开始下载（绝不在首屏触发，作品区离首屏很远）
+  // 2) 播放观察器：进入视口才 play，此时视频通常已缓冲好，遮罩擦开即在动
+  function markReady(v) {
+    v.dataset.ready = '1';
+    window.dispatchEvent(new CustomEvent('videoready', { detail: { video: v } }));
+  }
+  function attachVideoSource(v) {
+    if (v.dataset.loaded) return;
+    v.dataset.loaded = '1';
+    v.addEventListener('error', function onErr() {
+      if (v.dataset.fallback) return;
+      v.dataset.fallback = '1';
+      var local = v.getAttribute('data-local');
+      if (local) { v.src = local; v.load(); }
+    });
+    // 视频下载到可播放帧即置 ready，供 wipe 动画判断
+    ['loadeddata', 'canplay'].forEach(function (evt) {
+      v.addEventListener(evt, function () { if (!v.dataset.ready) markReady(v); }, { once: true });
+    });
+    v.src = v.getAttribute('data-src');
+    v.load();
+  }
   if ('IntersectionObserver' in window) {
     var lazyVideos = [].slice.call(document.querySelectorAll('video[data-src]'));
-    var videoObserver = new IntersectionObserver(function (entries) {
+    // 预加载：距视口 900px 开始下载缓冲
+    var preloadObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          attachVideoSource(e.target);
+          preloadObserver.unobserve(e.target);
+        }
+      });
+    }, { rootMargin: '900px 0px', threshold: 0 });
+    // 播放：进入视口才播，离开暂停
+    var playObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         var v = e.target;
         if (e.isIntersecting) {
-          if (!v.dataset.loaded) {
-            v.dataset.loaded = '1';
-            // CDN 失败自动回退源站：优先 data-src（jsDelivr），出错换 data-local（本地相对路径）
-            v.addEventListener('error', function onErr() {
-              if (v.dataset.fallback) return;
-              v.dataset.fallback = '1';
-              var local = v.getAttribute('data-local');
-              if (local) { v.src = local; v.load(); }
-            });
-            v.src = v.getAttribute('data-src');
-            v.load();
-          }
+          attachVideoSource(v);
           var p = v.play();
           if (p && p.catch) p.catch(function () {});
         } else if (v.src) {
           v.pause();
         }
       });
-    }, { rootMargin: '200px 0px', threshold: 0.01 });
-    lazyVideos.forEach(function (v) { videoObserver.observe(v); });
+    }, { rootMargin: '120px 0px', threshold: 0.01 });
+    lazyVideos.forEach(function (v) { preloadObserver.observe(v); playObserver.observe(v); });
   } else {
     // 老浏览器兜底：直接加载全部
     [].slice.call(document.querySelectorAll('video[data-src]')).forEach(function (v) {
@@ -235,10 +255,30 @@ document.documentElement.classList.add('js');
     var tl = gsap.timeline({ paused: true })
       .to(masks, { scaleX: 0, duration: 1.25, ease: 'power3.inOut' }, 0)
       .to(videos, { scale: 1, duration: 1.5, ease: 'power3.inOut' }, 0);
+    // 等四个视频都缓冲到可播放帧再擦遮罩，遮罩擦开时画面已在动而非静态封面。
+    // 超时 3500ms 兜底：某个视频加载失败也不能让遮罩永远不擦。
+    var wipeFired = false;
+    function playWipe() { if (wipeFired) return; wipeFired = true; tl.play(); }
+    function allReady() {
+      return videos.every(function (v) { return v.dataset.ready || v.dataset.fallback; });
+    }
+    function onReady(e) {
+      if (!videos.includes(e.detail && e.detail.video)) return;
+      if (allReady()) { playWipe(); window.removeEventListener('videoready', onReady); }
+    }
+    window.addEventListener('videoready', onReady);
+    var wipeTimer = null;
     ScrollTrigger.create({
       trigger: grid, start: 'top 80%', end: 'top 30%',
-      onEnter: function () { tl.play(); },
-      onLeaveBack: function () { tl.reverse(); }
+      onEnter: function () {
+        if (allReady()) { playWipe(); return; }
+        // 兜底超时：即使视频没备好也擦开，避免长期停在封面
+        wipeTimer = setTimeout(playWipe, 3500);
+      },
+      onLeaveBack: function () {
+        if (wipeTimer) { clearTimeout(wipeTimer); wipeTimer = null; }
+        tl.reverse();
+      }
     });
   })();
 
