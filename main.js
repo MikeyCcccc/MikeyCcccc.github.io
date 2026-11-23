@@ -25,7 +25,9 @@ document.documentElement.classList.add('js');
   var heroH1 = document.querySelector('#heroInner h1');
   var fly = null;
   var heroEl = document.querySelector('.hero');
-  if (window.innerWidth > 860 && heroH1 && heroEl) {
+  // 桌面与手机都启用（手机竖屏也要有标题飞入顶栏的特效），仅尊重减弱动效偏好
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduceMotion && heroH1 && heroEl) {
     fly = document.createElement('div');
     fly.className = 'name-fly';
     fly.textContent = heroH1.textContent;
@@ -60,7 +62,7 @@ document.documentElement.classList.add('js');
       });
   }
 
-  if (window.innerWidth > 860) {
+  if (!reduceMotion) {
     gsap.timeline({
       scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.25 }
     })
