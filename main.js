@@ -1,4 +1,6 @@
 "use strict";
+// 标记脚本可用：隐藏态只在 .js 下生效，脚本失败时内容默认可见（gate 62）
+document.documentElement.classList.add('js');
 (function () {
   gsap.registerPlugin(ScrollTrigger);
 
@@ -248,6 +250,17 @@
       tip.classList.add('hidden');
       try { localStorage.setItem(KEY, '1'); } catch (e) {}
     });
+    // 滚出首屏后自动淡出，避免全程悬浮遮挡底部内容
+    var ticking = false;
+    function onScrollTip() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        if (window.scrollY > window.innerHeight * 0.6) tip.classList.add('hidden');
+        ticking = false;
+      });
+    }
+    window.addEventListener('scroll', onScrollTip, { passive: true });
   })();
 
   // 横竖屏切换：让所有 ScrollTrigger 重新测量（布局断点变化后必须 refresh）

@@ -39,9 +39,12 @@ button{font-family:inherit}
   justify-content:space-between;padding:0 var(--pad);z-index:50;transition:background-color .5s}
 .nav.solid{background:var(--white);border-bottom:1px solid var(--line)}
 .brand{font-family:var(--serif);font-size:1.5rem;font-weight:700;line-height:1}
-.brand small{font-family:var(--sans);font-size:.6rem;font-weight:400;letter-spacing:.12em;display:block;margin-top:2px}
-.menu-btn{border:1px solid currentColor;background:none;border-radius:100px;padding:.45rem 1.1rem;
-  font-size:.75rem;letter-spacing:.08em;cursor:pointer;color:inherit}
+.brand small{font-family:var(--sans);font-size:.75rem;font-weight:600;letter-spacing:.06em;display:inline-block;
+  margin-top:4px;padding:.1rem .45rem;border-radius:4px;background:rgba(255,255,255,.82);color:#141414}
+.menu-btn{border:1px solid currentColor;border-radius:100px;padding:.5rem 1.15rem;
+  background:rgba(255,255,255,.82);color:#141414;
+  font-size:.8rem;letter-spacing:.06em;cursor:pointer;font-weight:600}
+.nav.solid .brand small,.nav.solid .menu-btn{background:transparent;color:var(--ink)}
 
 /* MENU OVERLAY */
 .overlay{position:fixed;inset:0;background:var(--black);color:var(--white);z-index:80;
@@ -72,10 +75,12 @@ button{font-family:inherit}
 /* 下滑飞向 nav 的标题层（fixed, 精确落到 ACTOR·DANCER 上方） */
 .name-fly{position:fixed;left:0;top:0;z-index:60;font-family:var(--serif);font-weight:700;
   color:#141414;line-height:.95;white-space:nowrap;pointer-events:none;transform-origin:left top}
-.hero-tags{display:flex;flex-wrap:wrap;gap:.8rem 2rem;justify-content:flex-start;margin-top:2rem}
-.hero-tags span{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:#141414;font-weight:600}
+.hero-tags{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:flex-start;margin-top:1.5rem}
+.hero-tags span{font-size:.78rem;letter-spacing:.04em;color:#141414;font-weight:700;
+  background:rgba(255,255,255,.82);padding:.28rem .6rem;border-radius:4px}
 .hero-scroll{position:absolute;bottom:2rem;left:var(--pad);transform:none;z-index:3;
-  color:#141414;font-size:.72rem;letter-spacing:.1em;font-weight:600}
+  color:#141414;font-size:.78rem;letter-spacing:.06em;font-weight:700;
+  background:rgba(255,255,255,.82);padding:.3rem .6rem;border-radius:4px}
 
 /* MARQUEE 2 */
 .marquee{background:var(--black);color:var(--white);overflow:hidden;padding:.7rem 0}
@@ -103,7 +108,7 @@ button{font-family:inherit}
 /* 3 THEATER / 线下剧场 — 参考 Sophia $350M 版式 */
 .theater{background:var(--white);height:380vh;position:relative}
 .theater-grid{position:sticky;top:0;height:100svh;display:grid;
-  grid-template-columns:1.35fr .65fr;gap:clamp(1.5rem,4vw,4rem);
+  grid-template-columns:minmax(0,1.35fr) minmax(0,.65fr);gap:clamp(1.5rem,4vw,4rem);
   align-items:stretch;padding-top:calc(var(--nav-h) + 3vh);padding-bottom:4vh}
 .theater-copy{display:flex;flex-direction:column;justify-content:center;min-width:0}
 .theater-top{display:flex;justify-content:space-between;max-width:34rem;
@@ -141,7 +146,7 @@ button{font-family:inherit}
 .edu-awards{font-family:var(--sans);font-weight:700;color:var(--white);
   font-size:clamp(1rem,2vw,1.5rem);line-height:1.5;letter-spacing:.04em;margin:.9rem 0 0}
 .edu-stage{position:relative;min-height:105vh;display:grid;
-  grid-template-columns:minmax(120px,1fr) minmax(280px,1.3fr) minmax(120px,1fr);
+  grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) minmax(0,1fr);
   align-items:center;gap:2rem;margin-top:3rem}
 .edu-repeat{display:flex;flex-direction:column;gap:.35rem;font-family:var(--sans);font-weight:700;
   font-size:clamp(1.7rem,4vw,3.6rem);line-height:.95;letter-spacing:-.02em;opacity:.92}
@@ -156,7 +161,7 @@ button{font-family:inherit}
   .edu-kicker{letter-spacing:.35em;font-size:.8rem}
   .edu-headline{white-space:normal;flex-wrap:wrap;font-size:clamp(2rem,9vw,3.2rem);gap:.2em}
   .edu-awards{font-size:.95rem;line-height:1.5}
-  .edu-stage{grid-template-columns:1fr;min-height:auto;gap:1rem;margin-top:2rem}
+  .edu-stage{grid-template-columns:minmax(0,1fr);min-height:auto;gap:1rem;margin-top:2rem}
   .edu-repeat{flex-direction:row;flex-wrap:wrap;justify-content:center;font-size:1.1rem;gap:.5rem}
   .edu-repeat--right{text-align:center;transform:none;margin-top:1.5rem}
   .edu-photo{width:min(82%,440px);transform:rotate(-4deg)}
@@ -176,7 +181,7 @@ button{font-family:inherit}
 .dance-sub+.dance-sub{margin-top:.15rem}
 /* 手机端环绕文字滚动条（桌面隐藏） */
 .dance-orbit-mobile{display:none}
-.dance-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:2rem}
+.dance-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.2rem;margin-top:2rem}
 .dance-card{position:relative;overflow:hidden;aspect-ratio:4/5;background:#222}
 .dance-card img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
 .dance-card:hover img{transform:scale(1.06)}
@@ -198,7 +203,7 @@ button{font-family:inherit}
 .work-exp-inner{position:relative;z-index:3}
 .work-exp .eyebrow{color:var(--mint)}
 .work-exp .sec-title{color:var(--white)}
-.work-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2rem;margin-top:2rem}
+.work-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2rem;margin-top:2rem}
 .work-item{border-top:2px solid var(--ink);padding-top:1.2rem}
 .work-item .yr{font-size:.72rem;color:var(--muted);letter-spacing:.06em}
 .work-item h3{font-family:var(--serif);font-size:1.6rem;margin:.5rem 0 .4rem}
@@ -217,7 +222,7 @@ button{font-family:inherit}
 .video-cap--hero{margin:0 0 .25rem}
 .showreel{width:100%;aspect-ratio:16/9;background:var(--black);margin:0 0 3rem}
 .showreel video{width:100%;height:100%;object-fit:contain;display:block}
-.role-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.2rem 1rem;align-items:start}
+.role-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.2rem 1rem;align-items:start}
 .role{background:transparent;overflow:hidden}
 /* 错开排布：右列整体下沉，形成一高一低的阶梯（参考杂志墙截图） */
 .role-grid .role:nth-child(even){margin-top:2rem}
@@ -233,7 +238,7 @@ button{font-family:inherit}
 /* 7.5 MEDIA GRID / 荧幕作品 杂志墙（参考截图排版） */
 .media-grid-section{background:var(--white);padding:5rem var(--pad)}
 /* 杂志墙：四条外框边完全无线（全开口），只保留内部十字分隔线 */
-.media-grid{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,clamp(150px,15vw,230px));
+.media-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(3,clamp(150px,15vw,230px));
   width:100%;max-width:var(--maxw);margin:0 auto;position:relative}
 .gcell{border-right:1px solid var(--line);border-bottom:1px solid var(--line);
   display:flex;align-items:center;justify-content:center;text-align:center;padding:1rem;
@@ -261,7 +266,7 @@ button{font-family:inherit}
 @media(prefers-reduced-motion:reduce){.gcell--title{opacity:1!important;transform:none!important}}
 
 /* 8 PARTNERS */
-.partners{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);
+.partners{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line);
   border-left:1px solid var(--line)}
 .partners div{padding:2rem 1.5rem;border-right:1px solid var(--line);border-bottom:1px solid var(--line);
   display:flex;align-items:center;justify-content:center;min-height:130px}
@@ -285,7 +290,7 @@ button{font-family:inherit}
 .footer-collab-row{display:flex;align-items:flex-end;justify-content:space-between;gap:2.5rem;flex-wrap:wrap;margin-top:2.5rem}
 .footer-partners{margin-top:0;flex:1 1 360px;max-width:560px}
 .footer-partners .eyebrow{color:var(--mint);margin-bottom:1rem;font-size:.65rem}
-.footer-partners .partners{grid-template-columns:repeat(3,1fr);border-color:#333}
+.footer-partners .partners{grid-template-columns:repeat(3,minmax(0,1fr));border-color:#333}
 .footer-partners .partners div{min-height:78px;padding:1rem .6rem;border-color:#333}
 .footer-partners .partners img,
 .footer-partners .partners div:nth-child(-n+3) img{max-height:46px}
@@ -306,21 +311,22 @@ button{font-family:inherit}
   display:flex;align-items:center;flex-wrap:wrap;gap:1.5rem}
 .footer-bottom>span:last-child{margin-left:auto}
 
-.reveal{opacity:0;transform:translateY(2rem)}
+.reveal{opacity:1;transform:none}
+.js .reveal{opacity:0;transform:translateY(2rem)}
 
 /* RESPONSIVE */
 @media(max-width:860px){
-  .work-grid,.role-grid{grid-template-columns:1fr}
+  .work-grid,.role-grid{grid-template-columns:minmax(0,1fr)}
   .role-grid .role:nth-child(even){margin-top:0}
-  .dance-grid{grid-template-columns:repeat(2,1fr)}
-  .partners{grid-template-columns:repeat(2,1fr)}
+  .dance-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .partners{grid-template-columns:repeat(2,minmax(0,1fr))}
   .theater{height:320vh}
-  .theater-grid{grid-template-columns:1fr;grid-template-rows:auto 1fr;gap:1.5rem}
+  .theater-grid{grid-template-columns:minmax(0,1fr);grid-template-rows:auto 1fr;gap:1.5rem}
   .theater-copy{justify-content:flex-start}
   .theater-mid{margin:2rem 0}
   .theater-big{font-size:clamp(3rem,13vw,6rem)}
   .theater-visual{min-height:46vh}
-  .media-grid{grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(6,clamp(120px,24vw,200px));
+  .media-grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(6,clamp(120px,24vw,200px));
     background-image:none;border-top:1px solid var(--line);border-left:1px solid var(--line)}
   .gcell,.gcell--tr,.font-6,.gcell--bl,.font-5{border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
   .gcell--tr{grid-column:2;grid-row:1/3}
@@ -342,7 +348,7 @@ button{font-family:inherit}
   .theater-top{justify-content:flex-start;gap:.6em;letter-spacing:.14em;font-size:1.1rem}
 }
 @media(max-width:520px){
-  .role-grid,.partners{grid-template-columns:1fr}
+  .role-grid,.partners{grid-template-columns:minmax(0,1fr)}
 }
 
 /* 横屏引导提示：仅竖屏小屏显示，可关闭 */
@@ -369,7 +375,7 @@ button{font-family:inherit}
   .sec-title{font-size:clamp(2rem,7vh,3.6rem)}
   /* 剧场：恢复左右双栏 */
   .theater{height:340vh}
-  .theater-grid{grid-template-columns:1.35fr .65fr;grid-template-rows:auto;gap:1.5rem;
+  .theater-grid{grid-template-columns:minmax(0,1.35fr) minmax(0,.65fr);grid-template-rows:auto;gap:1.5rem;
     padding-top:calc(var(--nav-h) + 1vh)}
   .theater-copy{justify-content:center}
   .theater-top{justify-content:flex-start;gap:.7em;letter-spacing:.18em;font-size:1.05rem}
@@ -377,7 +383,7 @@ button{font-family:inherit}
   .theater-big{font-size:clamp(2.8rem,9vh,6rem)}
   .theater-visual{min-height:0}
   /* 杂志墙：恢复四列三行 */
-  .media-grid{grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,clamp(90px,20vh,150px));
+  .media-grid{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(3,clamp(90px,20vh,150px));
     border-top:0;border-left:0}
   .gcell,.gcell--tr,.font-6,.gcell--bl,.font-5{border-right:0;border-bottom:0}
   .gcell--tr,.font-6{border-right:0}
@@ -395,14 +401,14 @@ button{font-family:inherit}
   /* 街舞：恢复三列 + SVG 环绕文字 */
   .dance-orbit{display:block}
   .dance-orbit-mobile{display:none}
-  .dance-grid{grid-template-columns:repeat(3,1fr)}
+  .dance-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
   /* 作品：恢复两列 */
-  .role-grid{grid-template-columns:repeat(2,1fr)}
+  .role-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .role-grid .role:nth-child(even){margin-top:1.2rem}
   /* 教育：恢复三栏 */
   .edu{padding-top:4rem}
   .edu-headline{font-size:clamp(1.8rem,6vh,3.4rem)}
-  .edu-stage{grid-template-columns:minmax(80px,1fr) minmax(200px,1.3fr) minmax(80px,1fr);
+  .edu-stage{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) minmax(0,1fr);
     min-height:88vh;margin-top:1.5rem}
   .edu-repeat{flex-direction:column;flex-wrap:nowrap;font-size:clamp(1rem,3.6vh,2rem)}
   .edu-repeat--right{text-align:right;transform:translateY(3rem)}
