@@ -83,8 +83,9 @@ document.documentElement.classList.add('js');
   }
 
   // footer portrait — 视差：随滚动照片上移/回退（scrub 双向跟随）
+  // 竖屏下整图铺底、人脸固定落在右侧清晰区，禁用视差避免人脸被推走；横屏/桌面保留
   var fportrait = document.querySelector('.footer-portrait img');
-  if (fportrait) {
+  if (fportrait && !(window.innerWidth <= 860 && window.matchMedia('(orientation: portrait)').matches)) {
     gsap.fromTo(fportrait,
       { yPercent: -8 },
       { yPercent: 8, ease: 'none',
