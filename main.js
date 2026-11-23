@@ -19,38 +19,45 @@ document.documentElement.classList.add('js');
   });
 
   // hero — 大标题随下滑精确飞到 nav 的 ACTOR·DANCER 上方（brand-name 位置）
+  // 关键修复：起止坐标全部用「函数式值」，ScrollTrigger 每次 refresh 都重新测量。
+  // 用「h1 相对 hero 的偏移」而非绝对视口坐标 —— 该差值与当前滚动位置无关，
+  // 因此用户在字体/图片加载完成前就滚动，也不会算出错误的起点导致动画不触发。
   var heroH1 = document.querySelector('#heroInner h1');
   var fly = null;
-  if (window.innerWidth > 860 && heroH1) {
+  var heroEl = document.querySelector('.hero');
+  if (window.innerWidth > 860 && heroH1 && heroEl) {
     fly = document.createElement('div');
     fly.className = 'name-fly';
     fly.textContent = heroH1.textContent;
     document.body.appendChild(fly);
     var brandName = document.querySelector('#brandName');
 
-    function layoutFly() {
-      var hr = heroH1.getBoundingClientRect();
+    // 起点：h1 相对 hero 左上角的位置（滚动无关）
+    function flyStartX() { return heroH1.getBoundingClientRect().left - heroEl.getBoundingClientRect().left; }
+    function flyStartY() { return heroH1.getBoundingClientRect().top - heroEl.getBoundingClientRect().top; }
+    // 终点：brand 在固定 nav 中，位置稳定；按最终盒高中点补偿基线
+    function flyScale() {
+      var h = parseFloat(getComputedStyle(heroH1).fontSize) || 1;
+      var b = parseFloat(getComputedStyle(brandName).fontSize) || 1;
+      return b / h;
+    }
+    function flyEndX() { return brandName.getBoundingClientRect().left; }
+    function flyEndY() {
       var br = brandName.getBoundingClientRect();
-      var hSize = parseFloat(getComputedStyle(heroH1).fontSize);
-      var bSize = parseFloat(getComputedStyle(brandName).fontSize);
-      var scale = bSize / hSize;
-      // 飞行层是块级 div（行高 .95），brand-name 是行内 span（字体度量盒更高），
-      // 直接对齐两者 top 会让飞入的中文比英文高出约 7px。按最终盒高中点补偿，使基线齐平。
-      var flyLH = parseFloat(getComputedStyle(fly).lineHeight) || hSize * 0.95;
-      var yAdjust = (br.height - flyLH * scale) / 2;
-      // 初始：固定在 h1 当前视口位置，原始字号
-      gsap.set(fly, { x: hr.left, y: hr.top, scale: 1, fontSize: hSize + 'px' });
-      gsap.set(heroH1, { opacity: 0 });
-      if (layoutFly.tween) layoutFly.tween.kill();
-      layoutFly.tween = gsap.to(fly, {
-        x: br.left, y: br.top + yAdjust, scale: scale, ease: 'none',
+      var h = parseFloat(getComputedStyle(heroH1).fontSize) || 1;
+      var flyLH = parseFloat(getComputedStyle(fly).lineHeight) || h * 0.95;
+      var yAdjust = (br.height - flyLH * flyScale()) / 2;
+      return br.top + yAdjust;
+    }
+
+    gsap.set(heroH1, { opacity: 0 });
+    gsap.fromTo(fly,
+      { x: flyStartX, y: flyStartY, scale: 1, fontSize: function () { return getComputedStyle(heroH1).fontSize; } },
+      {
+        x: flyEndX, y: flyEndY, scale: flyScale, ease: 'none', immediateRender: true,
         scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom 55%',
           scrub: 0.4, invalidateOnRefresh: true }
       });
-    }
-    layoutFly();
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutFly);
-    window.addEventListener('resize', layoutFly);
   }
 
   if (window.innerWidth > 860) {
@@ -300,8 +307,34 @@ document.documentElement.classList.add('js');
       if (w > 0) el.style.fontSize = (parentW / w * cur) + 'px';
     });
   }
-  window.addEventListener('load', fitText);
-  window.addEventListener('resize', fitText);
+
+  // 首屏特效"刚进页面触发不了"的根治：字体、图片、Swiper 都会改变布局，
+  // 而 ScrollTrigger 只在初始化时测量一次触发点。任何布局变化后都必须 refresh，
+  // 否则 hero 的 start/end 位置是旧值，滚动时动画不触发或位置错乱。
+  var refreshRaf = null;
+  function refreshAll() {
+    fitText();
+    if (refreshRaf) cancelAnimationFrame(refreshRaf);
+    // 双 rAF：等样式重排 + 绘制完成后再测量，坐标最稳
+    refreshRaf = requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        if (window.ScrollTrigger) ScrollTrigger.refresh();
+      });
+    });
+  }
+  fitText();
+  window.addEventListener('load', refreshAll);
+  // 字体就绪后 refresh（字体加载会改变 h1/font-size 与测量盒）
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(refreshAll);
+  // 首屏 4 张图逐张加载完也 refresh（object-fit 下不影响 hero 高度，但保险起见）
+  var heroImgs = document.querySelectorAll('.hero-swiper img');
+  var heroImgLeft = heroImgs.length;
+  heroImgs.forEach(function (img) {
+    if (img.complete) { heroImgLeft--; }
+    else img.addEventListener('load', function () { if (--heroImgLeft <= 0) refreshAll(); }, { once: true });
+  });
+  // 兜底：DOMContentLoaded 后 300ms 强制 refresh 一次，覆盖以上事件都错过的情况
+  setTimeout(refreshAll, 300);
 
   // menu overlay
   var menuBtn = document.getElementById('menuBtn');
@@ -345,7 +378,7 @@ document.documentElement.classList.add('js');
   function refreshOnRotate() {
     clearTimeout(rzTimer);
     rzTimer = setTimeout(function () {
-      if (window.ScrollTrigger) ScrollTrigger.refresh();
+      refreshAll();
     }, 250);
   }
   window.addEventListener('orientationchange', refreshOnRotate);
