@@ -58,7 +58,7 @@ button{font-family:inherit}
   font-family:var(--sans);font-size:.8rem;padding:.6rem 1.2rem;border-radius:100px}
 
 /* HERO 1 */
-.hero{height:100svh;margin-bottom:40vh;position:relative;display:flex;align-items:center;justify-content:center}
+.hero{height:100svh;margin-bottom:0;position:relative;display:flex;align-items:center;justify-content:center}
 .hero-sticky{position:absolute;inset:0;z-index:1;overflow:hidden;background:#1D1D1F}
 .hero-swiper,.hero-swiper .swiper-wrapper,.hero-swiper .swiper-slide{width:100%;height:100%;position:relative}
 /* Sophia 首页假翻页：130% 宽图 + 30% 反向漂移 + 1.2 缩放
@@ -77,7 +77,7 @@ button{font-family:inherit}
   color:#141414;line-height:.95;white-space:nowrap;pointer-events:none;transform-origin:left top}
 .hero-tags{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:flex-start;margin-top:1.5rem}
 .hero-tags span{font-size:.78rem;letter-spacing:.04em;color:#141414;font-weight:700;
-  background:rgba(255,255,255,.82);padding:.28rem .6rem;border-radius:4px}
+  background:none;padding:0;border-radius:0}
 .hero-scroll{position:absolute;bottom:2rem;left:var(--pad);transform:none;z-index:3;
   color:#141414;font-size:.78rem;letter-spacing:.06em;font-weight:700;
   background:rgba(255,255,255,.82);padding:.3rem .6rem;border-radius:4px}
@@ -279,7 +279,8 @@ button{font-family:inherit}
 .footer{background:var(--black);color:var(--white);padding:6rem var(--pad) 3rem;position:relative;overflow:hidden}
 /* 联系区人像置于最右侧，左侧用渐变过渡到黑底（参考原站编辑感排版） */
 .footer-portrait{position:absolute;top:0;right:0;bottom:0;width:min(42vw,620px);z-index:0;pointer-events:none}
-.footer-portrait img{position:absolute;top:-12%;left:0;width:100%;height:124%;object-fit:cover;object-position:center 22%;will-change:transform}
+/* object-position 水平 32%：原图人脸偏左，居中会让窄容器只露出半张脸 */
+.footer-portrait img{position:absolute;top:-12%;left:0;width:100%;height:124%;object-fit:cover;object-position:32% 22%;will-change:transform}
 .footer-portrait-fade{position:absolute;inset:0;
   background:linear-gradient(90deg,var(--black) 0%,rgba(0,0,0,.85) 12%,rgba(0,0,0,.25) 45%,rgba(0,0,0,0) 72%),
              linear-gradient(0deg,var(--black) 0%,rgba(0,0,0,0) 28%)}
@@ -347,6 +348,22 @@ button{font-family:inherit}
   /* 剧场：手机端四字收紧，不再用 justify-content:space-between 撑满整行 */
   .theater-top{justify-content:flex-start;gap:.6em;letter-spacing:.14em;font-size:1.1rem}
 }
+
+/* 竖屏专属调整（横屏/桌面完全不受影响） */
+@media(max-width:860px) and (orientation:portrait){
+  /* 页脚：竖屏下人像只露半张脸，去掉渐变遮罩让人物完整显示 */
+  .footer-portrait-fade{background:none}
+  /* 杂志墙：底部两个竖屏视频上移到《神医下山》《璀璨新生命》原位置（第3-4行左列），
+     这两个长标题另起一行左右并排（第5行），消除底部视频单独一行的空洞 */
+  .media-grid{grid-template-rows:repeat(5,clamp(120px,24vw,200px))}
+  .gcell--bl{grid-column:1;grid-row:3/5}
+  .gcell--title.font-1{grid-column:1!important;grid-row:1!important}
+  .gcell--title.font-2{grid-column:1!important;grid-row:2!important}
+  .gcell--title.font-4{grid-column:2!important;grid-row:3!important}
+  .gcell--title.font-6{grid-column:2!important;grid-row:4!important}
+  .gcell--title.font-3{grid-column:1!important;grid-row:5!important}
+  .gcell--title.font-5{grid-column:2!important;grid-row:5!important}
+}
 @media(max-width:520px){
   .role-grid,.partners{grid-template-columns:minmax(0,1fr)}
 }
@@ -385,7 +402,8 @@ button{font-family:inherit}
   /* 杂志墙：恢复四列三行 */
   .media-grid{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(3,clamp(90px,20vh,150px));
     border-top:0;border-left:0}
-  .gcell,.gcell--tr,.font-6,.gcell--bl,.font-5{border-right:0;border-bottom:0}
+  /* 横屏修复：保留内部十字分隔线，只让四条外框开口（与桌面一致） */
+  .gcell{border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
   .gcell--tr,.font-6{border-right:0}
   .gcell--bl,.font-5,.font-6{border-bottom:0}
   .gcell--tr{grid-column:4;grid-row:1/3}

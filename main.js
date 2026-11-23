@@ -34,12 +34,16 @@ document.documentElement.classList.add('js');
       var hSize = parseFloat(getComputedStyle(heroH1).fontSize);
       var bSize = parseFloat(getComputedStyle(brandName).fontSize);
       var scale = bSize / hSize;
+      // 飞行层是块级 div（行高 .95），brand-name 是行内 span（字体度量盒更高），
+      // 直接对齐两者 top 会让飞入的中文比英文高出约 7px。按最终盒高中点补偿，使基线齐平。
+      var flyLH = parseFloat(getComputedStyle(fly).lineHeight) || hSize * 0.95;
+      var yAdjust = (br.height - flyLH * scale) / 2;
       // 初始：固定在 h1 当前视口位置，原始字号
       gsap.set(fly, { x: hr.left, y: hr.top, scale: 1, fontSize: hSize + 'px' });
       gsap.set(heroH1, { opacity: 0 });
       if (layoutFly.tween) layoutFly.tween.kill();
       layoutFly.tween = gsap.to(fly, {
-        x: br.left, y: br.top, scale: scale, ease: 'none',
+        x: br.left, y: br.top + yAdjust, scale: scale, ease: 'none',
         scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom 55%',
           scrub: 0.4, invalidateOnRefresh: true }
       });
