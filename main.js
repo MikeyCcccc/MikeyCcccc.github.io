@@ -70,16 +70,48 @@ document.documentElement.classList.add('js');
   // nav 小字"陈翰霖"保持隐藏，由 hero 大标题缩小飞到左上角接管该位置
   gsap.set('#brandName', { opacity: 0 });
 
-  // showreel — autoplay muted when scrolled into view, pause when out
-  var reel = document.getElementById('showreel');
-  if (reel && 'IntersectionObserver' in window) {
-    var ro = new IntersectionObserver(function (entries) {
+  // 视频统一懒加载：进入视口前只显示 poster，不下载 mp4（首屏省约 15MB）
+  // 首次进入视口才赋 src 并播放；离开视口暂停以省流量/电量
+  if ('IntersectionObserver' in window) {
+    var lazyVideos = [].slice.call(document.querySelectorAll('video[data-src]'));
+    var videoObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
-        if (e.isIntersecting) { var p = reel.play(); if (p && p.catch) p.catch(function () {}); }
-        else { reel.pause(); }
+        var v = e.target;
+        if (e.isIntersecting) {
+          if (!v.dataset.loaded) {
+            v.dataset.loaded = '1';
+            // CDN 失败自动回退源站：优先 data-src（jsDelivr），出错换 data-local（本地相对路径）
+            v.addEventListener('error', function onErr() {
+              if (v.dataset.fallback) return;
+              v.dataset.fallback = '1';
+              var local = v.getAttribute('data-local');
+              if (local) { v.src = local; v.load(); }
+            });
+            v.src = v.getAttribute('data-src');
+            v.load();
+          }
+          var p = v.play();
+          if (p && p.catch) p.catch(function () {});
+        } else if (v.src) {
+          v.pause();
+        }
       });
-    }, { threshold: 0.35 });
-    ro.observe(reel);
+    }, { rootMargin: '200px 0px', threshold: 0.01 });
+    lazyVideos.forEach(function (v) { videoObserver.observe(v); });
+  } else {
+    // 老浏览器兜底：直接加载全部
+    [].slice.call(document.querySelectorAll('video[data-src]')).forEach(function (v) {
+      v.addEventListener('error', function onErr() {
+        if (v.dataset.fallback) return;
+        v.dataset.fallback = '1';
+        var local = v.getAttribute('data-local');
+        if (local) { v.src = local; v.load(); }
+      });
+      v.src = v.getAttribute('data-src');
+      v.load();
+      var p = v.play();
+      if (p && p.catch) p.catch(function () {});
+    });
   }
 
   // footer portrait — 视差：随滚动照片上移/回退（scrub 双向跟随）
