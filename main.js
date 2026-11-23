@@ -263,28 +263,35 @@ document.documentElement.classList.add('js');
       .to(masks, { scaleX: 0, duration: 1.25, ease: 'power3.inOut' }, 0)
       .to(videos, { scale: 1, duration: 1.5, ease: 'power3.inOut' }, 0);
     // 等四个视频都缓冲到可播放帧再擦遮罩，遮罩擦开时画面已在动而非静态封面。
-    // 超时 3500ms 兜底：某个视频加载失败也不能让遮罩永远不擦。
-    var wipeFired = false;
-    function playWipe() { if (wipeFired) return; wipeFired = true; tl.play(); }
+    // 不用一次性锁：快速滑动会 进入→离开→再进入，锁一旦置位第二次就无法再擦，
+    // 遮罩会永久停在覆盖态（用户看到的深灰罩子）。改用动画进度判断是否已擦开。
     function allReady() {
       return videos.every(function (v) { return v.dataset.ready || v.dataset.fallback; });
     }
+    var wipeTimer = null;
+    function clearWipeTimer() { if (wipeTimer) { clearTimeout(wipeTimer); wipeTimer = null; } }
+    function playWipe() {
+      clearWipeTimer();
+      if (tl.progress() < 1) tl.play();   // 已完全擦开则不重复
+    }
+    function tryPlay() {
+      if (allReady()) { playWipe(); return; }
+      // 兜底超时：即使视频没备好也擦开，避免长期停在封面
+      clearWipeTimer();
+      wipeTimer = setTimeout(playWipe, 3500);
+    }
     function onReady(e) {
       if (!videos.includes(e.detail && e.detail.video)) return;
-      if (allReady()) { playWipe(); window.removeEventListener('videoready', onReady); }
+      if (allReady() && wipeTimer) playWipe();  // 等待中的视频全部就绪，立即擦开
     }
     window.addEventListener('videoready', onReady);
-    var wipeTimer = null;
     ScrollTrigger.create({
-      trigger: grid, start: 'top 80%', end: 'top 30%',
-      onEnter: function () {
-        if (allReady()) { playWipe(); return; }
-        // 兜底超时：即使视频没备好也擦开，避免长期停在封面
-        wipeTimer = setTimeout(playWipe, 3500);
-      },
+      trigger: grid, start: 'top 85%', end: 'bottom 15%',
+      onEnter: tryPlay,        // 从上往下进入
+      onEnterBack: tryPlay,    // 从下往上回滚进入（快速滑动常见，之前缺失）
       onLeaveBack: function () {
-        if (wipeTimer) { clearTimeout(wipeTimer); wipeTimer = null; }
-        tl.reverse();
+        clearWipeTimer();
+        tl.pause(0);           // 明确重置到覆盖态，等下次进入重新擦（reverse 在快速滑动中会卡在中间）
       }
     });
   })();
