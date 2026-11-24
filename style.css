@@ -396,6 +396,29 @@ button{font-family:inherit}
     width:22px;height:22px;border-radius:50%;line-height:1;font-size:.7rem;margin-left:.15rem;
     display:flex;align-items:center;justify-content:center;padding:0}
   .rotate-tip.hidden{opacity:0;transform:translate(-50%,1rem);pointer-events:none}
+  /* 教育：竖屏下 2018 / 优秀毕业生 竖排在图片左右两侧各一列 */
+  .edu-stage{
+    grid-template-columns:auto minmax(0,1fr) auto;
+    align-items:start;
+    gap:.2rem;
+  }
+  .edu-repeat{
+    writing-mode:vertical-rl;
+    text-orientation:upright;
+    flex-direction:row;
+    flex-wrap:nowrap;
+    justify-content:flex-start;
+    align-items:center;
+    max-height:none;
+    font-size:clamp(.95rem,4vw,1.45rem);
+    line-height:1.1;
+    gap:.5rem;
+    letter-spacing:.02em;
+    opacity:.92;
+    white-space:nowrap;
+  }
+  .edu-repeat--left,.edu-repeat--right{transform:none;margin-top:0}
+  .edu-photo{grid-column:2;grid-row:1;width:100%;align-self:center}
 }
 
 /* 横屏手机解锁桌面级布局（矮屏 landscape，避开普通桌面） */
