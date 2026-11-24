@@ -301,7 +301,7 @@ button{font-family:inherit}
 /* 城发文旅放大、TVBS 缩小、新华网缩小避免 logo 贴底像被切 */
 .footer-partners .partners div:nth-child(2) img{max-height:66px}
 .footer-partners .partners div:nth-child(4) img{max-height:28px}
-.footer-partners .partners div:nth-child(6) img{max-height:30px}
+.footer-partners .partners div:nth-child(6) img{max-height:38px}
 /* 二维码靠右 */
 .footer-meta{display:flex;align-items:flex-end;justify-content:flex-end;gap:2rem;flex-wrap:wrap}
 .footer-stats{font-size:.7rem;color:#999;padding:0}
