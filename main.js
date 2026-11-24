@@ -53,13 +53,28 @@ document.documentElement.classList.add('js');
     }
 
     gsap.set(heroH1, { opacity: 0 });
+    // 给大标题和 ACTOR·DANCER 用相同的滚动区间，确保严格同步：
+    // 陈翰霖飞入左上角的同时，ACTOR·DANCER 右移让位。
+    // 注意：两个 ScrollTrigger 必须用各自独立的配置对象。共用同一对象会被
+    // ScrollTrigger 注入内部引用而冲突，导致 scrub 动画卡在中途（实测卡在 68%）。
+    function navTrigger() {
+      return { trigger: '.hero', start: 'top top', end: 'bottom 55%',
+        scrub: 0.4, invalidateOnRefresh: true };
+    }
     gsap.fromTo(fly,
       { x: flyStartX, y: flyStartY, scale: 1, fontSize: function () { return getComputedStyle(heroH1).fontSize; } },
       {
         x: flyEndX, y: flyEndY, scale: flyScale, ease: 'none', immediateRender: true,
-        scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom 55%',
-          scrub: 0.4, invalidateOnRefresh: true }
+        scrollTrigger: navTrigger()
       });
+    // ACTOR·DANCER 初始左移到左上角（占 brandName 的位置），随下滑右移回原位让位。
+    // 用 offsetLeft 差值（不含 transform，避免测量循环），与标题飞行同步。
+    var brandSmall = document.querySelector('.brand small');
+    if (brandSmall) {
+      gsap.fromTo(brandSmall,
+        { x: function () { return brandName.offsetLeft - brandSmall.offsetLeft; } },
+        { x: 0, ease: 'none', immediateRender: true, scrollTrigger: navTrigger() });
+    }
   }
 
   if (!reduceMotion) {
