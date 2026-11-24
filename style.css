@@ -320,6 +320,16 @@ button{font-family:inherit}
 .js .reveal{opacity:0;transform:translateY(2rem)}
 
 /* RESPONSIVE */
+/* 桌面网页端：减少人像上的黑色渐变覆盖，让渐变在更靠左处就过渡到清晰。
+   透明点从 72% 提前到 45%（约 logo 框右边缘位置），人物脸不再被黑罩压暗。
+   手机横竖屏各有独立 fade 规则，不受此处影响。 */
+@media(min-width:861px){
+  /* 人像区左边缘移到 logo 框右边缘（约 max(45%,604px)），渐变从这里开始过渡 */
+  .footer-portrait{left:max(45%,604px);right:0;width:auto}
+  .footer-portrait-fade{
+    background:linear-gradient(90deg,var(--black) 0%,rgba(0,0,0,.78) 8%,rgba(0,0,0,.16) 24%,rgba(0,0,0,0) 42%),
+               linear-gradient(0deg,var(--black) 0%,rgba(0,0,0,0) 28%)}
+}
 @media(max-width:860px){
   .work-grid,.role-grid{grid-template-columns:minmax(0,1fr)}
   .role-grid .role:nth-child(even){margin-top:0}
