@@ -354,14 +354,21 @@ button{font-family:inherit}
 
 /* 竖屏专属调整（横屏/桌面完全不受影响） */
 @media(max-width:860px) and (orientation:portrait){
-  /* 页脚：人物底图整体缩小置于右侧，底边收在横线上方（--fpor-bottom） */
-  .footer{--fpor-bottom:10.8rem}
+  /* 页脚：人物底图缩小置右，底边由 JS 动态对齐横线（--fpor-bottom 为无 JS 兜底值） */
+  .footer{--fpor-bottom:10.6rem}
   .footer-portrait{width:56%}
+  /* 纯 alpha 羽化：去掉毛玻璃模糊，人物保持清晰，左侧文字仍有实色底保证可读；
+     多段渐变过渡柔和干净，不再有脏灰糊边 */
   .footer-portrait-fade{
-    background:linear-gradient(90deg,rgba(29,29,31,.92) 0%,rgba(29,29,31,.6) 18%,rgba(29,29,31,0) 42%);
-    -webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);
-    -webkit-mask-image:linear-gradient(90deg,#000 0%,#000 18%,transparent 42%);
-    mask-image:linear-gradient(90deg,#000 0%,#000 18%,transparent 42%)}
+    background:linear-gradient(90deg,
+      #1d1d1f 0%,
+      rgba(29,29,31,.96) 7%,
+      rgba(29,29,31,.82) 17%,
+      rgba(29,29,31,.5) 30%,
+      rgba(29,29,31,.16) 44%,
+      rgba(29,29,31,0) 58%);
+    -webkit-backdrop-filter:none;backdrop-filter:none;
+    -webkit-mask-image:none;mask-image:none}
   /* 杂志墙：底部两个竖屏视频上移到《神医下山》《璀璨新生命》原位置（第3-4行左列），
      这两个长标题另起一行左右并排（第5行），消除底部视频单独一行的空洞 */
   .media-grid{grid-template-rows:repeat(5,clamp(120px,24vw,200px))}

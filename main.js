@@ -320,6 +320,22 @@ document.documentElement.classList.add('js');
   // 首屏特效"刚进页面触发不了"的根治：字体、图片、Swiper 都会改变布局，
   // 而 ScrollTrigger 只在初始化时测量一次触发点。任何布局变化后都必须 refresh，
   // 否则 hero 的 start/end 位置是旧值，滚动时动画不触发或位置错乱。
+  // 竖屏 footer：让人像底图容器底边精确落在 footer-bottom 顶部的横线上。
+  // 写死 rem 会因字体/换行/视口变化而错位（实测有 3.8px 缝隙），改为动态测量。
+  function syncFooterPortraitBottom() {
+    var portrait = document.querySelector('.footer-portrait');
+    var rule = document.querySelector('.footer-bottom');
+    var footer = document.querySelector('.footer');
+    if (!portrait || !rule || !footer) return;
+    var isPortrait = window.innerWidth <= 860 && window.matchMedia('(orientation: portrait)').matches;
+    if (!isPortrait) { footer.style.removeProperty('--fpor-bottom'); return; }
+    // portrait 是 absolute（相对 footer 定位），其底边距 footer 底边正好等于 --fpor-bottom。
+    // 横线到 footer 底边的距离 = footer.bottom - rule.top，把它赋给 --fpor-bottom 即精确对齐。
+    // portrait 脱离文档流，改这个值不会反过来影响横线位置，测量稳定。
+    var dist = footer.getBoundingClientRect().bottom - rule.getBoundingClientRect().top;
+    footer.style.setProperty('--fpor-bottom', Math.max(0, dist).toFixed(2) + 'px');
+  }
+
   var refreshRaf = null;
   function refreshAll() {
     fitText();
@@ -327,6 +343,7 @@ document.documentElement.classList.add('js');
     // 双 rAF：等样式重排 + 绘制完成后再测量，坐标最稳
     refreshRaf = requestAnimationFrame(function () {
       requestAnimationFrame(function () {
+        syncFooterPortraitBottom();
         if (window.ScrollTrigger) ScrollTrigger.refresh();
       });
     });
