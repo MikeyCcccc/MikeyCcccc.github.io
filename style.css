@@ -278,9 +278,11 @@ button{font-family:inherit}
 /* 9 FOOTER */
 .footer{background:var(--black);color:var(--white);padding:6rem var(--pad) 3rem;position:relative;overflow:hidden}
 /* 联系区人像置于最右侧，左侧用渐变过渡到黑底（参考原站编辑感排版） */
-.footer-portrait{position:absolute;top:0;right:0;bottom:var(--fpor-bottom,6rem);width:min(42vw,620px);z-index:0;pointer-events:none}
-/* object-position 水平 32%：原图人脸偏左，居中会让窄容器只露出半张脸 */
-.footer-portrait img{position:absolute;top:-12%;left:0;width:100%;height:124%;object-fit:cover;object-position:32% 22%;will-change:transform}
+/* 人物底图整体缩小、置于右侧；容器底边收在横线上方并裁切，图片物理上不会越过横线 */
+.footer-portrait{position:absolute;top:0;right:0;bottom:var(--fpor-bottom,6rem);width:min(34vw,500px);
+  z-index:0;pointer-events:none;overflow:hidden}
+/* 图片填满容器（不再 top:-12%/height:124% 溢出）；object-position 32% 22% 保证人脸完整 */
+.footer-portrait img{position:absolute;top:-6%;left:0;width:100%;height:112%;object-fit:cover;object-position:32% 22%;will-change:transform}
 .footer-portrait-fade{position:absolute;inset:0;
   background:linear-gradient(90deg,var(--black) 0%,rgba(0,0,0,.85) 12%,rgba(0,0,0,.25) 45%,rgba(0,0,0,0) 72%),
              linear-gradient(0deg,var(--black) 0%,rgba(0,0,0,0) 28%)}
@@ -352,15 +354,14 @@ button{font-family:inherit}
 
 /* 竖屏专属调整（横屏/桌面完全不受影响） */
 @media(max-width:860px) and (orientation:portrait){
-  /* 页脚：整图铺满宽度，底边收到 footer-bottom 横线上方（--fpor-bottom）；
-     图片位置参数(top/height/object-position)一律不动 */
+  /* 页脚：人物底图整体缩小置于右侧，底边收在横线上方（--fpor-bottom） */
   .footer{--fpor-bottom:10.8rem}
-  .footer-portrait{width:100%}
+  .footer-portrait{width:56%}
   .footer-portrait-fade{
-    background:linear-gradient(90deg,rgba(29,29,31,.95) 0%,rgba(29,29,31,.8) 22%,rgba(29,29,31,.1) 40%,rgba(29,29,31,0) 52%);
-    -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
-    -webkit-mask-image:linear-gradient(90deg,#000 0%,#000 22%,transparent 40%);
-    mask-image:linear-gradient(90deg,#000 0%,#000 22%,transparent 40%)}
+    background:linear-gradient(90deg,rgba(29,29,31,.92) 0%,rgba(29,29,31,.6) 18%,rgba(29,29,31,0) 42%);
+    -webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);
+    -webkit-mask-image:linear-gradient(90deg,#000 0%,#000 18%,transparent 42%);
+    mask-image:linear-gradient(90deg,#000 0%,#000 18%,transparent 42%)}
   /* 杂志墙：底部两个竖屏视频上移到《神医下山》《璀璨新生命》原位置（第3-4行左列），
      这两个长标题另起一行左右并排（第5行），消除底部视频单独一行的空洞 */
   .media-grid{grid-template-rows:repeat(5,clamp(120px,24vw,200px))}

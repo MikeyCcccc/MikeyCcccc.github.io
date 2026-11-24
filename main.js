@@ -148,8 +148,8 @@ document.documentElement.classList.add('js');
   var fportrait = document.querySelector('.footer-portrait img');
   if (fportrait && !(window.innerWidth <= 860 && window.matchMedia('(orientation: portrait)').matches)) {
     gsap.fromTo(fportrait,
-      { yPercent: -8 },
-      { yPercent: 8, ease: 'none',
+      { yPercent: -4 },
+      { yPercent: 4, ease: 'none',
         scrollTrigger: { trigger: '.footer', start: 'top bottom', end: 'bottom bottom',
           scrub: 0.6, invalidateOnRefresh: true }
       });
