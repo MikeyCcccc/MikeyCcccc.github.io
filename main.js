@@ -220,8 +220,9 @@ document.documentElement.classList.add('js');
   })();
 
   // education magazine photo — rises and tilts into place like reference book cover
+  // 不做 opacity 动画：半透明会透出黑底、让照片发灰像蒙了黑罩。始终不透明，只保留位移+旋转。
   gsap.fromTo('#eduPhoto',
-    { yPercent: 62, rotation: 16, opacity: 0.25 },
+    { yPercent: 62, rotation: 16, opacity: 1 },
     { yPercent: -8, rotation: -6, opacity: 1, ease: 'none',
       scrollTrigger: { trigger: '.edu', start: 'top bottom', end: 'bottom top', scrub: 0.75 } });
 
