@@ -278,7 +278,7 @@ button{font-family:inherit}
 /* 9 FOOTER */
 .footer{background:var(--black);color:var(--white);padding:6rem var(--pad) 3rem;position:relative;overflow:hidden}
 /* 联系区人像置于最右侧，左侧用渐变过渡到黑底（参考原站编辑感排版） */
-.footer-portrait{position:absolute;top:0;right:0;bottom:0;width:min(42vw,620px);z-index:0;pointer-events:none}
+.footer-portrait{position:absolute;top:0;right:0;bottom:var(--fpor-bottom,6rem);width:min(42vw,620px);z-index:0;pointer-events:none}
 /* object-position 水平 32%：原图人脸偏左，居中会让窄容器只露出半张脸 */
 .footer-portrait img{position:absolute;top:-12%;left:0;width:100%;height:124%;object-fit:cover;object-position:32% 22%;will-change:transform}
 .footer-portrait-fade{position:absolute;inset:0;
@@ -308,7 +308,8 @@ button{font-family:inherit}
   box-shadow:0 8px 24px rgba(0,0,0,.3)}
 .qr-box img{width:100%;aspect-ratio:1/1;object-fit:contain;display:block;margin:0 auto}
 .qr-box span{display:block;color:#141414;font-size:.72rem;font-weight:700;margin-top:.35rem;letter-spacing:.06em}
-.footer-bottom{margin-top:4rem;padding-top:1.5rem;border-top:1px solid #333;font-size:.7rem;color:#888;
+.footer-bottom{position:relative;z-index:2;background:var(--black);
+  margin-top:4rem;padding-top:1.5rem;border-top:1px solid #333;font-size:.7rem;color:#888;
   display:flex;align-items:center;flex-wrap:wrap;gap:1.5rem}
 .footer-bottom>span:last-child{margin-left:auto}
 
@@ -351,8 +352,9 @@ button{font-family:inherit}
 
 /* 竖屏专属调整（横屏/桌面完全不受影响） */
 @media(max-width:860px) and (orientation:portrait){
-  /* 页脚：仅把整图铺满宽度，图片位置参数(top/height/object-position)一律不动；
-     左侧约到三分之一处加“模糊+压暗 → 清晰”的遮罩，保证白字可读 */
+  /* 页脚：整图铺满宽度，底边收到 footer-bottom 横线上方（--fpor-bottom）；
+     图片位置参数(top/height/object-position)一律不动 */
+  .footer{--fpor-bottom:10.8rem}
   .footer-portrait{width:100%}
   .footer-portrait-fade{
     background:linear-gradient(90deg,rgba(29,29,31,.95) 0%,rgba(29,29,31,.8) 22%,rgba(29,29,31,.1) 40%,rgba(29,29,31,0) 52%);
@@ -468,7 +470,7 @@ button{font-family:inherit}
   .edu-repeat--right{text-align:right;transform:translateY(3rem)}
   .edu-photo{width:min(100%,300px);transform:rotate(-6deg)}
   /* 页脚下压：横屏高度有限 */
-  .footer{padding:3.5rem var(--pad) 2rem}
+  .footer{padding:3.5rem var(--pad) 2rem;--fpor-bottom:4.8rem}
   .footer h2{font-size:clamp(2rem,9vh,4rem)}
 }
 
