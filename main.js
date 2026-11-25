@@ -119,7 +119,7 @@ document.documentElement.classList.add('js');
   }
   if ('IntersectionObserver' in window) {
     var lazyVideos = [].slice.call(document.querySelectorAll('video[data-src]'));
-    // 预加载：距视口 900px 开始下载缓冲
+    // 预加载：距视口 1200px 就开始下载缓冲（快速滑动时留出更多提前量，避免空白框）
     var preloadObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (e.isIntersecting) {
@@ -127,7 +127,7 @@ document.documentElement.classList.add('js');
           preloadObserver.unobserve(e.target);
         }
       });
-    }, { rootMargin: '900px 0px', threshold: 0 });
+    }, { rootMargin: '1200px 0px', threshold: 0 });
     // 播放：进入视口才播，离开暂停
     var playObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
