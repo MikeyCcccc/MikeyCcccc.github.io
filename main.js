@@ -119,7 +119,7 @@ document.documentElement.classList.add('js');
   }
   if ('IntersectionObserver' in window) {
     var lazyVideos = [].slice.call(document.querySelectorAll('video[data-src]'));
-    // 预加载：距视口 1200px 就开始下载缓冲（快速滑动时留出更多提前量，避免空白框）
+    // 预加载：距视口 2200px 就开始下载缓冲（境外源站慢，快速滑动也要提前备好）
     var preloadObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (e.isIntersecting) {
@@ -127,17 +127,29 @@ document.documentElement.classList.add('js');
           preloadObserver.unobserve(e.target);
         }
       });
-    }, { rootMargin: '1200px 0px', threshold: 0 });
-    // 播放：进入视口才播，离开暂停
+    }, { rootMargin: '2200px 0px', threshold: 0 });
+    // 播放：真正有数据（readyState>=3）才 play，避免无脑 play 卡在第一帧
+    function doPlay(v) {
+      if (v.dataset.want !== '1') return;   // 可能已滑出视口
+      var p = v.play();
+      if (p && p.catch) p.catch(function () {});
+    }
+    function playWhenReady(v) {
+      v.dataset.want = '1';
+      attachVideoSource(v);
+      if (v.readyState >= 3) { doPlay(v); return; }
+      // 数据还没到：等首帧就绪再播，而不是让 play() 请求挂起卡住
+      v.addEventListener('loadeddata', function () { doPlay(v); }, { once: true });
+      v.addEventListener('canplay', function () { doPlay(v); }, { once: true });
+    }
     var playObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         var v = e.target;
         if (e.isIntersecting) {
-          attachVideoSource(v);
-          var p = v.play();
-          if (p && p.catch) p.catch(function () {});
-        } else if (v.src) {
-          v.pause();
+          playWhenReady(v);
+        } else {
+          v.dataset.want = '0';
+          if (v.src) v.pause();
         }
       });
     }, { rootMargin: '120px 0px', threshold: 0.01 });
