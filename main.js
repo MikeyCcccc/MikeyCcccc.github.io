@@ -404,14 +404,11 @@ document.documentElement.classList.add('js');
       tl.to(card, { yPercent: -140, opacity: 0, ease: 'power2.in', duration: 0.8 }, at + 1.2);
     });
 
-    // 标题：初始可见（上下居中），一开始下滑就上移，到第一个卡片完全出现时已彻底消失
+    // 标题：必须与卡片共用同一条 timeline（同时间基准）。
+    // 若另起独立 timeline，scrub 会把它自己的 short duration 重新映射到整个滚动区间，
+    // 导致标题在中段仍可见。合并后按绝对时间：从 0 上移，第一个卡片全现(gap+inDur)时精确归零。
     if (head) {
-      var headTl = gsap.timeline({
-        scrollTrigger: { trigger: sec, start: 'top top', end: 'bottom bottom', scrub: 0.7,
-          invalidateOnRefresh: true }
-      });
-      // 从 0 开始上移，在 gap+inDur（第一个卡片全现）时 opacity 归零
-      headTl.to(head, { y: -200, opacity: 0, ease: 'power1.in', duration: gap + inDur }, 0);
+      tl.to(head, { y: -200, opacity: 0, ease: 'power1.in', duration: gap + inDur }, 0);
     }
   })();
 

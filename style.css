@@ -295,8 +295,8 @@ a:active{opacity:.7}
 /* 四张严格左-右-左-右交替，垂直位置错开，彼此拉开距离 */
 .role--stack:nth-child(1){top:20%;left:6%;--rot:-9deg}
 .role--stack:nth-child(2){top:42%;right:5%;--rot:8deg}
-.role--stack:nth-child(3){top:14%;left:16%;--rot:-6deg}
-.role--stack:nth-child(4){top:50%;right:16%;--rot:11deg}
+.role--stack:nth-child(3){top:14%;left:5%;--rot:-6deg}
+.role--stack:nth-child(4){top:50%;right:5%;--rot:11deg}
 .role-wipe{position:relative;overflow:hidden;background:var(--paper)}
 .role img,.role video{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;display:block;background:transparent}
 .role .role-wipe video{transform:scale(1.15);transform-origin:center;will-change:transform}
