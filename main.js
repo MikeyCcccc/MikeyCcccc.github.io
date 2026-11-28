@@ -296,8 +296,8 @@ document.documentElement.classList.add('js');
     gsap.fromTo(strip,
       // 起点：第一张照片顶部正好落在容器最底边（100%），完全贴底不外露，下滑才升起
       { y: function () { return visual.clientHeight * 1.0; } },
-      // 终点：最后一张照片底边停在签名所在高度（visual 88%）附近，确保签名始终压在照片上、下方不留空条
-      { y: function () { return -(strip.scrollHeight - visual.clientHeight) - visual.clientHeight * 0.03; },
+      // 终点：最后一张照片底边正好贴住容器最底边（不留空白条），签名压在其下缘并破到下一页
+      { y: function () { return -(strip.scrollHeight - visual.clientHeight); },
         ease: 'none',
         scrollTrigger: { trigger: '.theater', start: 'top top', end: 'bottom bottom',
           scrub: 0.5, invalidateOnRefresh: true }

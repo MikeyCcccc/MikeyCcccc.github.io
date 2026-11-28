@@ -163,7 +163,7 @@ a:active{opacity:.7}
 /* 签名：原尺寸/透明叠加风格，回到 theater-visual（照片列）内压在照片下缘可见，
    尾部少量越界形成破页。theater z-index 保证破页部分盖在 works 之上 */
 /* 细长花体：用 top 锚定主体在照片下缘（约 visual 90%），SVG 加高让尾部下垂破到 works 页 */
-.theater-signature{position:absolute;left:50%;top:88%;bottom:auto;width:min(100%,720px);transform:translateX(-50%);
+.theater-signature{position:absolute;left:50%;top:95%;bottom:auto;width:min(100%,720px);transform:translateX(-50%);
   z-index:20;pointer-events:none;mix-blend-mode:difference}
 .theater-signature svg{width:100%;height:auto;display:block}
 @media(prefers-reduced-motion:reduce){.theater-mark svg{animation:none}}
