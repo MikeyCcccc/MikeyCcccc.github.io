@@ -162,8 +162,9 @@ a:active{opacity:.7}
 @keyframes mark-float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(2deg)}}
 /* 签名：原尺寸/透明叠加风格，回到 theater-visual（照片列）内压在照片下缘可见，
    尾部少量越界形成破页。theater z-index 保证破页部分盖在 works 之上 */
-.theater-signature{position:absolute;left:50%;bottom:-4vh;width:min(84%,680px);transform:translateX(-50%);
-  z-index:20;pointer-events:none;opacity:.82;mix-blend-mode:screen}
+/* 细长花体：用 top 锚定主体在照片下缘（约 visual 90%），SVG 加高让尾部下垂破到 works 页 */
+.theater-signature{position:absolute;left:50%;top:96%;bottom:auto;width:min(100%,900px);transform:translateX(-50%);
+  z-index:20;pointer-events:none;opacity:.85;mix-blend-mode:screen}
 .theater-signature svg{width:100%;height:auto;display:block}
 @media(prefers-reduced-motion:reduce){.theater-mark svg{animation:none}}
 
@@ -281,7 +282,10 @@ a:active{opacity:.7}
 .gcell--title,.gcell--title.font-1,.gcell--title.font-2,.gcell--title.font-3,
 .gcell--title.font-4,.gcell--title.font-5,.gcell--title.font-6{
   font-family:var(--sans);font-weight:600;font-size:clamp(1.1rem,1.8vw,1.8rem);
-  letter-spacing:.01em;line-height:1.15;font-style:normal}
+  letter-spacing:.01em;line-height:1.15;font-style:normal;flex-direction:column;gap:.35rem}
+/* 剧名英文翻译 */
+.gcell-en{font-family:var(--sans);font-size:.62em;font-weight:400;letter-spacing:.04em;
+  color:var(--muted);line-height:1.1;text-transform:none}
 .gcell--gif{padding:0;background:var(--sand);position:relative}
 .gcell--tr{grid-column:4;grid-row:1/3}
 .gcell--bl{grid-column:1/3;grid-row:2/4}
@@ -290,6 +294,12 @@ a:active{opacity:.7}
 .gcell-duo{display:flex;gap:.6rem;align-items:center;justify-content:center;height:74%;width:100%;position:relative;z-index:2}
 .gcell-duo video,.gcell-duo img{height:100%;width:auto;max-width:none;aspect-ratio:9/16;object-fit:cover;background:transparent;
   box-shadow:0 16px 36px var(--scrim-22)}
+/* 杂志墙每格轮播：多个片段绝对叠放，仅 .is-active 可见（切换用淡入淡出） */
+.reel-rotor{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.reel-rotor .reel-item{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  opacity:0;visibility:hidden;pointer-events:none;z-index:2;
+  transition:opacity .45s ease,visibility .45s ease}
+.reel-rotor .reel-item.is-active{opacity:1;visibility:visible;z-index:3}
 .gcell--gif::before{content:'';position:absolute;inset:0;z-index:1;
   background:linear-gradient(125deg,var(--paper-50) 0%,var(--paper-0) 45%)}
 @media(prefers-reduced-motion:reduce){.gcell--title{opacity:1!important;transform:none!important}}
@@ -376,8 +386,7 @@ a:active{opacity:.7}
   .gcell--tr{grid-column:2;grid-row:1/3}
   .gcell--bl{grid-column:1;grid-row:5/7}
   .gcell--title{grid-column:auto!important;grid-row:auto!important}
-  .gcell-duo{gap:.45rem;height:80%}
-  .gcell-duo video:nth-child(3){display:none}
+  /* 杂志墙视频格已改为 .reel-rotor 轮播（片段绝对居中，见基础样式） */
   /* 街舞：窄屏 textPath 贴边被裁切，改用上下两条滚动文字 */
   .dance-orbit{display:none}
   .dance-orbit-mobile{display:block;overflow:hidden;white-space:nowrap;background:var(--mint);
@@ -426,9 +435,7 @@ a:active{opacity:.7}
   .media-grid{border-top:0;border-left:0}
   .gcell--tr,.gcell--title.font-4,.gcell--title.font-6,.gcell--title.font-5{border-right:0}
   .gcell--bl,.gcell--title.font-5{border-bottom:0}
-  /* 竖屏左下视频格只留左边那个视频、居中（隐藏图片和第3个视频；第3个已被 max-width:860 规则隐藏） */
-  .gcell--bl .gcell-duo picture,.gcell--bl .gcell-duo img{display:none!important}
-  .gcell--bl .gcell-duo{justify-content:center}
+  /* 竖屏左下视频格：两个片段由 .reel-rotor 依次轮播，绝对居中（无需旧的 gcell-duo 隐藏规则） */
   /* 竖屏舞蹈网格 2 列：第二行 gif 与静态图调换（photo2 左 / dance2 右） */
   .dance-grid>.dance-card:nth-child(1){order:1}
   .dance-grid>.dance-card:nth-child(2){order:2}
@@ -506,7 +513,6 @@ a:active{opacity:.7}
   .gcell--tr{grid-column:4;grid-row:1/3}
   .gcell--bl{grid-column:1/3;grid-row:2/4}
   .gcell--title{grid-column:auto!important;grid-row:auto!important}
-  .gcell-duo video:nth-child(3){display:block}
   .font-1{font-size:clamp(1.4rem,4.5vh,2.6rem)}
   .font-2{font-size:clamp(1.3rem,4vh,2.4rem)}
   .font-3{font-size:clamp(1rem,3vh,1.7rem)}

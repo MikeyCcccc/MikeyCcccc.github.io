@@ -153,10 +153,14 @@ document.documentElement.classList.add('js');
         }
       });
     }, { rootMargin: '120px 0px', threshold: 0.01 });
-    lazyVideos.forEach(function (v) { preloadObserver.observe(v); playObserver.observe(v); });
+    lazyVideos.forEach(function (v) {
+      preloadObserver.observe(v);   // rotor 片段也提前缓冲，保证轮播切换不卡
+      // rotor 内的视频由下方轮播器单独接管，避免默认播放器和轮播同时 play
+      if (!v.hasAttribute('data-rotor')) playObserver.observe(v);
+    });
   } else {
-    // 老浏览器兜底：直接加载全部
-    [].slice.call(document.querySelectorAll('video[data-src]')).forEach(function (v) {
+    // 老浏览器兜底：直接加载全部（rotor 视频由轮播器自行加载）
+    [].slice.call(document.querySelectorAll('video[data-src]:not([data-rotor])')).forEach(function (v) {
       v.addEventListener('error', function onErr() {
         if (v.dataset.fallback) return;
         v.dataset.fallback = '1';
@@ -169,6 +173,79 @@ document.documentElement.classList.add('js');
       if (p && p.catch) p.catch(function () {});
     });
   }
+
+  // 杂志墙：每格两个片段循环轮播（右上 GIF→视频，左下 视频→视频）
+  // 进入视口才开始，离开即暂停并清掉定时器，避免后台偷偷播放。
+  [].slice.call(document.querySelectorAll('.reel-rotor[data-rotor]')).forEach(function (rotor) {
+    var items = [].slice.call(rotor.querySelectorAll('.reel-item'));
+    if (items.length < 2) return;
+    var idx = 0, timer = null, running = false;
+
+    function armTimer(ms) { clearTimeout(timer); timer = setTimeout(next, ms); }
+    function playItem(item) {
+      if (item.tagName === 'VIDEO') {
+        attachVideoSource(item);
+        var started = 0;
+        // 片段播完若不足 2.5s 就补足停留，避免短片一闪而过（用户要的约 3s 节奏）
+        item.onended = function () {
+          clearTimeout(timer);
+          timer = setTimeout(next, started ? Math.max(0, 2500 - (Date.now() - started)) : 0);
+        };
+        var kick = function () {
+          if (!running || !item.classList.contains('is-active')) return;
+          started = Date.now();
+          var p = item.play();
+          if (p && p.catch) p.catch(function () {});
+        };
+        if (item.readyState >= 3) kick();
+        else {
+          item.addEventListener('loadeddata', kick, { once: true });
+          item.addEventListener('canplay', kick, { once: true });
+        }
+        armTimer(9000); // 视频卡住时的兜底切换
+      } else {
+        armTimer(3500); // GIF 片段定时切换
+      }
+    }
+    function next() {
+      if (!running) return;
+      clearTimeout(timer); timer = null;
+      var cur = items[idx];
+      cur.onended = null;
+      if (cur.tagName === 'VIDEO') { cur.pause(); try { cur.currentTime = 0; } catch (e) {} }
+      cur.classList.remove('is-active');
+      idx = (idx + 1) % items.length;
+      var nxt = items[idx];
+      nxt.classList.add('is-active');
+      playItem(nxt);
+    }
+    function startRotor() {
+      if (running) return;
+      running = true;
+      idx = 0;
+      items.forEach(function (it, i) {
+        it.classList.toggle('is-active', i === 0);
+        if (it.tagName === 'VIDEO' && i !== 0) { it.pause(); try { it.currentTime = 0; } catch (e) {} }
+      });
+      playItem(items[0]);
+    }
+    function stopRotor() {
+      running = false;
+      clearTimeout(timer); timer = null;
+      items.forEach(function (it) {
+        it.onended = null;
+        if (it.tagName === 'VIDEO') it.pause();
+      });
+    }
+    if ('IntersectionObserver' in window) {
+      var rotorObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) startRotor(); else stopRotor(); });
+      }, { rootMargin: '60px 0px', threshold: 0.05 });
+      rotorObserver.observe(rotor);
+    } else {
+      startRotor();
+    }
+  });
 
   // footer portrait — 视差：随滚动照片上移/回退（scrub 双向跟随）
   // 竖屏下整图铺底、人脸固定落在右侧清晰区，禁用视差避免人脸被推走；横屏/桌面保留

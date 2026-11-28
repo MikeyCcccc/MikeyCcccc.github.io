@@ -71,20 +71,24 @@
 <!-- 7.5 MEDIA GRID / 荧幕作品（参考杂志墙排版） -->
 <section class="media-grid-section" id="moments">
   <div class="media-grid">
-    <div class="gcell gcell--gif gcell--tr"><picture><source srcset="assets/moments/m07.webp" type="image/webp"><img src="assets/moments/m07.gif" alt="陈翰霖短剧片段" loading="lazy" decoding="async"></picture></div>
-    <div class="gcell gcell--title font-1" style="grid-column:1;grid-row:1">永不饶恕</div>
-    <div class="gcell gcell--title font-2" style="grid-column:2;grid-row:1">问心有愧</div>
-    <div class="gcell gcell--title font-3" style="grid-column:3;grid-row:1">芳龄二十</div>
-    <div class="gcell gcell--gif gcell--bl">
-      <div class="gcell-duo">
-        <video data-src="assets/moments/reel-duo-a.mp4" poster="assets/moments/reel-duo-a-poster.webp" muted loop playsinline preload="none"></video>
-        <picture><source srcset="assets/moments/m03.webp" type="image/webp"><img src="assets/moments/m03.gif" alt="陈翰霖短剧片段" loading="lazy" decoding="async"></picture>
-        <video data-src="assets/moments/reel-duo-c.mp4" poster="assets/moments/reel-duo-c-poster.webp" muted loop playsinline preload="none"></video>
+    <div class="gcell gcell--gif gcell--tr">
+      <div class="reel-rotor" data-rotor>
+        <picture class="reel-item is-active"><source srcset="assets/moments/m07.webp" type="image/webp"><img src="assets/moments/m07.gif" alt="陈翰霖短剧片段" loading="lazy" decoding="async"></picture>
+        <video class="reel-item" data-src="assets/moments/reel-top.mp4" poster="assets/moments/reel-top-poster.webp" data-rotor muted playsinline preload="none"></video>
       </div>
     </div>
-    <div class="gcell gcell--title font-4" style="grid-column:3;grid-row:2">神医下山</div>
-    <div class="gcell gcell--title font-5" style="grid-column:3;grid-row:3">璀璨新生命</div>
-    <div class="gcell gcell--title font-6" style="grid-column:4;grid-row:3">静静，别跑</div>
+    <div class="gcell gcell--title font-1" style="grid-column:1;grid-row:1">永不饶恕<span class="gcell-en">Never Forgive</span></div>
+    <div class="gcell gcell--title font-2" style="grid-column:2;grid-row:1">问心有愧<span class="gcell-en">Guilty Conscience</span></div>
+    <div class="gcell gcell--title font-3" style="grid-column:3;grid-row:1">芳龄二十<span class="gcell-en">Age Twenty</span></div>
+    <div class="gcell gcell--gif gcell--bl">
+      <div class="reel-rotor" data-rotor>
+        <video class="reel-item is-active" data-src="assets/moments/reel-duo-a.mp4" poster="assets/moments/reel-duo-a-poster.webp" data-rotor muted playsinline preload="none"></video>
+        <video class="reel-item" data-src="assets/moments/reel-duo-c.mp4" poster="assets/moments/reel-duo-c-poster.webp" data-rotor muted playsinline preload="none"></video>
+      </div>
+    </div>
+    <div class="gcell gcell--title font-4" style="grid-column:3;grid-row:2">神医下山<span class="gcell-en">Divine Doctor Descends</span></div>
+    <div class="gcell gcell--title font-5" style="grid-column:3;grid-row:3">璀璨新生命<span class="gcell-en">Brilliant New Life</span></div>
+    <div class="gcell gcell--title font-6" style="grid-column:4;grid-row:3">静静，别跑<span class="gcell-en">Jingjing, Don't Run</span></div>
   </div>
 </section>
 
@@ -130,7 +134,7 @@
       </div>
       <!-- 签名：压在照片下缘的透明叠加字，尾部少量破页到下一页 -->
       <div class="theater-signature" aria-hidden="true">
-    <svg viewBox="0 0 640 180" role="presentation">
+    <svg viewBox="0 0 1500 300" role="presentation">
       <defs>
         <linearGradient id="sigGrad" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0%" stop-color="#eaf1f7"/>
@@ -143,8 +147,8 @@
           <stop offset="100%" stop-color="#141414" stop-opacity="0"/>
         </linearGradient>
       </defs>
-      <text x="50%" y="60%" text-anchor="middle" font-family="'Dancing Script','Great Vibes',cursive" font-size="112" font-weight="700" fill="none" stroke="url(#sigEdge)" stroke-width="3" transform="rotate(-7 320 100)">MIKEY CHEN</text>
-      <text x="50%" y="58%" text-anchor="middle" font-family="'Dancing Script','Great Vibes',cursive" font-size="112" font-weight="700" fill="url(#sigGrad)" transform="rotate(-7 320 100)">MIKEY CHEN</text>
+      <text x="50%" y="52%" text-anchor="middle" font-family="'Great Vibes','Dancing Script',cursive" font-size="150" font-weight="400" fill="none" stroke="url(#sigEdge)" stroke-width="2.4" transform="rotate(-9 750 150)">MIKEY CHEN</text>
+      <text x="50%" y="50%" text-anchor="middle" font-family="'Great Vibes','Dancing Script',cursive" font-size="150" font-weight="400" fill="url(#sigGrad)" transform="rotate(-9 750 150)">MIKEY CHEN</text>
     </svg>
       </div>
     </div>
