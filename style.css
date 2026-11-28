@@ -170,12 +170,12 @@ a:active{opacity:.7}
 /* 4 EDU */
 .edu{background:var(--black);color:var(--white);overflow:hidden;padding:8rem var(--pad) 4rem}
 .edu-inner{max-width:var(--maxw);margin:0 auto}
-.edu-kicker{font-family:var(--serif);font-size:clamp(.8rem,1.6vw,1.1rem);letter-spacing:.55em;margin:0 0 1.2rem;color:var(--white)}
+.edu-kicker{font-family:var(--serif);font-size:clamp(.85rem,1.5vw,1.05rem);letter-spacing:.55em;margin:0 0 1.2rem;color:var(--white)}
 .edu-headline{font-family:var(--sans);font-weight:700;font-size:clamp(2.6rem,8vw,7rem);line-height:1;margin:0;
   display:flex;align-items:center;gap:.35em;white-space:nowrap}
 .edu-star{width:.42em;height:.42em;flex:none;color:var(--white)}
 .edu-awards{font-family:var(--serif);font-weight:400;color:var(--white);
-  font-size:clamp(1rem,2vw,1.5rem);line-height:1.5;letter-spacing:.04em;margin:.9rem 0 0}
+  font-size:clamp(.85rem,1.5vw,1.05rem);line-height:1.5;letter-spacing:.04em;margin:.9rem 0 0}
 .edu-stage{position:relative;min-height:105vh;display:grid;
   grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) minmax(0,1fr);
   align-items:center;gap:2rem;margin-top:3rem}
@@ -189,9 +189,9 @@ a:active{opacity:.7}
   mix-blend-mode:overlay;pointer-events:none}
 @media(max-width:860px){
   .edu{padding-top:6rem}
-  .edu-kicker{letter-spacing:.35em;font-size:.8rem}
+  .edu-kicker{letter-spacing:.35em}
   .edu-headline{white-space:normal;flex-wrap:wrap;font-size:clamp(2rem,9vw,3.2rem);gap:.2em}
-  .edu-awards{font-size:.95rem;line-height:1.5}
+  .edu-awards{line-height:1.5}
   .edu-stage{grid-template-columns:minmax(0,1fr);min-height:auto;gap:1rem;margin-top:2rem}
   .edu-repeat{flex-direction:row;flex-wrap:wrap;justify-content:center;font-size:1.1rem;gap:.5rem}
   .edu-repeat--right{text-align:center;transform:none;margin-top:1.5rem}
@@ -248,7 +248,7 @@ a:active{opacity:.7}
 .works-sub{font-family:var(--serif);font-weight:700;color:var(--ink);font-size:clamp(1.1rem,2vw,1.5rem);
   letter-spacing:.04em;margin:-1.2rem 0 2rem}
 /* 视频标题：黑色、字号小于 24px */
-.video-cap{font-family:var(--serif);font-weight:700;color:var(--black);font-size:1.05rem;
+.video-cap{font-family:var(--serif);font-weight:700;color:var(--black);font-size:clamp(.85rem,1.5vw,1.05rem);
   letter-spacing:.03em;line-height:1.3;margin:0 0 .7rem}
 .video-cap--hero{margin:0 0 .25rem}
 .showreel{width:100%;aspect-ratio:16/9;background:var(--black);margin:0 0 3rem}
