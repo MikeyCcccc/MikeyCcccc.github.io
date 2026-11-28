@@ -163,7 +163,7 @@ a:active{opacity:.7}
 /* 签名：原尺寸/透明叠加风格，回到 theater-visual（照片列）内压在照片下缘可见，
    尾部少量越界形成破页。theater z-index 保证破页部分盖在 works 之上 */
 /* 细长花体：用 top 锚定主体在照片下缘（约 visual 90%），SVG 加高让尾部下垂破到 works 页 */
-.theater-signature{position:absolute;left:50%;top:96%;bottom:auto;width:min(100%,900px);transform:translateX(-50%);
+.theater-signature{position:absolute;left:50%;top:96%;bottom:auto;width:min(100%,680px);transform:translateX(-50%);
   z-index:20;pointer-events:none;opacity:.85;mix-blend-mode:screen}
 .theater-signature svg{width:100%;height:auto;display:block}
 @media(prefers-reduced-motion:reduce){.theater-mark svg{animation:none}}
@@ -176,7 +176,7 @@ a:active{opacity:.7}
   display:flex;align-items:center;gap:.35em;white-space:nowrap}
 .edu-star{width:.42em;height:.42em;flex:none;color:var(--white)}
 .edu-awards{font-family:var(--serif);font-weight:400;color:var(--white);
-  font-size:clamp(.85rem,1.5vw,1.05rem);line-height:1.5;letter-spacing:.04em;margin:.9rem 0 0}
+  font-size:clamp(.85rem,1.5vw,1.05rem);line-height:1.5;letter-spacing:.04em;margin:1.2rem 0 0}
 .edu-stage{position:relative;min-height:105vh;display:grid;
   grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) minmax(0,1fr);
   align-items:center;gap:2rem;margin-top:3rem}
@@ -245,27 +245,32 @@ a:active{opacity:.7}
 .work-exp .work-item p{color:var(--paper-90)}
 
 /* 7 WORKS / SHOWREEL */
-.works{background:var(--iceblue)}
-.works-sub{font-family:var(--serif);font-weight:700;color:var(--ink);font-size:clamp(1.1rem,2vw,1.5rem);
-  letter-spacing:.04em;margin:-1.2rem 0 2rem}
-/* 视频标题：黑色、字号小于 24px */
+/* WORKS：参考 sophiaamoruso 全屏视频页 —— 底视频铺满，滚动时斜卡片叠上来 */
+.works{position:relative;background:var(--black);height:400vh;overflow:clip}
+.works-stage{position:sticky;top:0;height:100vh;width:100%;overflow:hidden;background:var(--black)}
+.works-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.works-shade{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,0,0,.18) 0%,rgba(0,0,0,0) 38%,rgba(0,0,0,.06) 62%,rgba(0,0,0,.34) 100%)}
+.works-headline{position:absolute;left:var(--pad);right:var(--pad);top:26%;z-index:2;color:#fff;pointer-events:none}
+.works-kicker{font-family:var(--sans);font-weight:700;font-size:clamp(1rem,2.4vw,2rem);letter-spacing:.42em;
+  margin:0 0 .6rem;color:#fff;text-shadow:0 2px 20px rgba(0,0,0,.45)}
+.works-hero-title{font-family:var(--sans);font-weight:800;font-size:clamp(2.4rem,8.4vw,9rem);line-height:.92;
+  letter-spacing:-.02em;margin:0;color:#fff;white-space:nowrap;text-shadow:0 3px 26px rgba(0,0,0,.4)}
+/* 斜叠卡片：绝对定位在舞台内，初始藏在视口外，由 JS 滚动逐个移入 */
 .video-cap{font-family:var(--serif);font-weight:700;color:var(--black);font-size:clamp(.85rem,1.5vw,1.05rem);
   letter-spacing:.03em;line-height:1.3;margin:0 0 .7rem}
-.video-cap--hero{margin:0 0 .25rem}
-.showreel{width:100%;aspect-ratio:16/9;background:var(--black);margin:0 0 3rem}
-.showreel video{width:100%;height:100%;object-fit:contain;display:block}
-.role-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.2rem 1rem;align-items:start}
-.role{background:transparent;overflow:hidden}
-/* 错开排布：右列整体下沉，形成一高一低的阶梯（参考杂志墙截图） */
-.role-grid .role:nth-child(even){margin-top:2rem}
-/* 参考站 image-wipe：从左往右擦入 + 视频略微放大（mask 滑出、image scale 1→1.15） */
-.role-wipe{position:relative;overflow:hidden}
+.role-grid{position:absolute;inset:0;z-index:3;pointer-events:none}
+.role--stack{position:absolute;width:clamp(260px,30vw,460px);background:var(--paper);padding:.8rem;
+  box-shadow:0 30px 70px rgba(0,0,0,.42);pointer-events:auto;will-change:transform,opacity}
+/* 四张卡片斜放、错开落在视频上（右图效果）：角度与位置按序号变化 */
+.role--stack:nth-child(1){top:29%;left:8%;--rot:-8deg}
+.role--stack:nth-child(2){top:36%;right:6%;--rot:7deg}
+.role--stack:nth-child(3){top:17%;right:20%;--rot:-5deg}
+.role--stack:nth-child(4){top:48%;left:31%;--rot:10deg}
+.role-wipe{position:relative;overflow:hidden;background:var(--paper)}
 .role img,.role video{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;display:block;background:transparent}
 .role .role-wipe video{transform:scale(1.15);transform-origin:center;will-change:transform}
-.wipe-mask{position:absolute;inset:0;z-index:2;background:var(--white);transform-origin:right center;pointer-events:none}
-.role .cap{padding:.9rem 1rem}
-.role .cap b{font-family:var(--serif);font-size:1.05rem;display:block}
-.role .cap span{font-size:.75rem;color:var(--muted)}
+.wipe-mask{position:absolute;inset:0;z-index:2;background:var(--paper);transform-origin:right center;pointer-events:none}
 
 /* 7.5 MEDIA GRID / 荧幕作品 杂志墙（参考截图排版） */
 .media-grid-section{background:var(--white);padding:5rem var(--pad)}
@@ -300,6 +305,9 @@ a:active{opacity:.7}
   opacity:0;visibility:hidden;pointer-events:none;z-index:2;
   transition:opacity .45s ease,visibility .45s ease}
 .reel-rotor .reel-item.is-active{opacity:1;visibility:visible;z-index:3}
+/* 左下格：桌面/横屏保持原版三视频并排，轮播结构只在竖屏启用 */
+.gcell--bl .reel-rotor{display:none}
+.gcell--bl .gcell-duo{display:flex}
 .gcell--gif::before{content:'';position:absolute;inset:0;z-index:1;
   background:linear-gradient(125deg,var(--paper-50) 0%,var(--paper-0) 45%)}
 @media(prefers-reduced-motion:reduce){.gcell--title{opacity:1!important;transform:none!important}}
@@ -370,8 +378,12 @@ a:active{opacity:.7}
                linear-gradient(0deg,var(--black) 0%,var(--scrim-0) 28%)}
 }
 @media(max-width:860px){
-  .work-grid,.role-grid{grid-template-columns:minmax(0,1fr)}
-  .role-grid .role:nth-child(even){margin-top:0}
+  .work-grid{grid-template-columns:minmax(0,1fr)}
+  /* works 斜卡片在窄屏收窄 */
+  .role--stack{width:clamp(180px,52vw,300px);padding:.55rem}
+  .works-headline{top:22%}
+  .works-kicker{font-size:clamp(.85rem,2.6vw,1.2rem)}
+  .works-hero-title{font-size:clamp(2rem,10vw,4rem)}
   .dance-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .partners{grid-template-columns:repeat(2,minmax(0,1fr))}
   .theater{height:320vh}
@@ -387,6 +399,13 @@ a:active{opacity:.7}
   .gcell--bl{grid-column:1;grid-row:5/7}
   .gcell--title{grid-column:auto!important;grid-row:auto!important}
   /* 杂志墙视频格已改为 .reel-rotor 轮播（片段绝对居中，见基础样式） */
+  /* works 斜卡片：竖屏四张彼此错开叠放，避开顶部标题 */
+  .works{height:360vh}
+  .role--stack{width:min(72vw,300px)}
+  .role--stack:nth-child(1){top:34%;left:6%;--rot:-9deg}
+  .role--stack:nth-child(2){top:46%;right:5%;--rot:8deg}
+  .role--stack:nth-child(3){top:26%;right:12%;--rot:-6deg}
+  .role--stack:nth-child(4){top:58%;left:20%;--rot:11deg}
   /* 街舞：窄屏 textPath 贴边被裁切，改用上下两条滚动文字 */
   .dance-orbit{display:none}
   .dance-orbit-mobile{display:block;overflow:hidden;white-space:nowrap;background:var(--mint);
@@ -435,7 +454,9 @@ a:active{opacity:.7}
   .media-grid{border-top:0;border-left:0}
   .gcell--tr,.gcell--title.font-4,.gcell--title.font-6,.gcell--title.font-5{border-right:0}
   .gcell--bl,.gcell--title.font-5{border-bottom:0}
-  /* 竖屏左下视频格：两个片段由 .reel-rotor 依次轮播，绝对居中（无需旧的 gcell-duo 隐藏规则） */
+  /* 竖屏左下视频格：只用一个 .reel-rotor 轮播、单片段居中；隐藏桌面三视频并排结构 */
+  .gcell--bl .gcell-duo{display:none}
+  .gcell--bl .reel-rotor{display:flex}
   /* 竖屏舞蹈网格 2 列：第二行 gif 与静态图调换（photo2 左 / dance2 右） */
   .dance-grid>.dance-card:nth-child(1){order:1}
   .dance-grid>.dance-card:nth-child(2){order:2}
@@ -445,7 +466,7 @@ a:active{opacity:.7}
   .dance-grid>.dance-card:nth-child(6){order:6}
 }
 @media(max-width:520px){
-  .role-grid,.partners{grid-template-columns:minmax(0,1fr)}
+  .partners{grid-template-columns:minmax(0,1fr)}
 }
 
 /* 横屏引导提示：仅竖屏小屏显示，可关闭 */
@@ -523,9 +544,11 @@ a:active{opacity:.7}
   .dance-orbit{display:block}
   .dance-orbit-mobile{display:none}
   .dance-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
-  /* 作品：恢复两列 */
-  .role-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .role-grid .role:nth-child(even){margin-top:1.2rem}
+  /* 作品斜卡片：横屏高度有限，缩小并贴近中部 */
+  .role--stack{width:clamp(200px,34vw,340px);padding:.6rem}
+  .works-headline{top:20%}
+  .works-hero-title{font-size:clamp(2.2rem,7vh,4.4rem)}
+  .works-kicker{font-size:clamp(.9rem,2.6vh,1.4rem)}
   /* 教育：恢复三栏 */
   .edu{padding-top:4rem}
   .edu-headline{font-size:clamp(1.8rem,6vh,3.4rem)}

@@ -179,6 +179,8 @@ document.documentElement.classList.add('js');
   [].slice.call(document.querySelectorAll('.reel-rotor[data-rotor]')).forEach(function (rotor) {
     var items = [].slice.call(rotor.querySelectorAll('.reel-item'));
     if (items.length < 2) return;
+    // 右上格第一个是短 GIF（约 1.7s）：只让它完整播一次就切，避免视觉上重复三次
+    var gifHold = rotor.closest('.gcell--tr') ? 1700 : 3500;
     var idx = 0, timer = null, running = false;
 
     function armTimer(ms) { clearTimeout(timer); timer = setTimeout(next, ms); }
@@ -204,7 +206,7 @@ document.documentElement.classList.add('js');
         }
         armTimer(9000); // 视频卡住时的兜底切换
       } else {
-        armTimer(3500); // GIF 片段定时切换
+        armTimer(gifHold); // GIF 片段定时切换（右上短 GIF 播一次即切）
       }
     }
     function next() {
@@ -355,52 +357,54 @@ document.documentElement.classList.add('js');
           toggleActions: 'none play none reset' } });
   })();
 
-  // works role videos — 参考站 image-wipe：四个视频同步擦入 + 略微放大（1.15→1）
+  // works — 参考 sophiaamoruso：底视频铺满，往下滚动时斜卡片逐个叠上来
   (function () {
-    var grid = document.getElementById('roleGrid');
-    if (!grid || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    var masks = gsap.utils.toArray(grid.querySelectorAll('.wipe-mask'));
-    var videos = gsap.utils.toArray(grid.querySelectorAll('video'));
-    if (!masks.length) return;
-    // 单一 trigger：四个视频一起擦入，不逐行触发
-    // 先设初始态，再用一个 scrub 的 timeline 驱动全部 mask + video
+    var sec = document.querySelector('.works');
+    var stage = document.querySelector('.works-stage');
+    var cards = gsap.utils.toArray('.role--stack');
+    var masks = gsap.utils.toArray('.role--stack .wipe-mask');
+    var vids = gsap.utils.toArray('.role--stack video');
+    if (!sec || !stage || !cards.length) return;
+
+    // 遮罩擦开 + 视频放大复位（保留参考站 image-wipe 细节）
     gsap.set(masks, { scaleX: 1 });
-    gsap.set(videos, { scale: 1.15 });
-    var tl = gsap.timeline({ paused: true })
-      .to(masks, { scaleX: 0, duration: 1.25, ease: 'power3.inOut' }, 0)
-      .to(videos, { scale: 1, duration: 1.5, ease: 'power3.inOut' }, 0);
-    // 等四个视频都缓冲到可播放帧再擦遮罩，遮罩擦开时画面已在动而非静态封面。
-    // 不用一次性锁：快速滑动会 进入→离开→再进入，锁一旦置位第二次就无法再擦，
-    // 遮罩会永久停在覆盖态（用户看到的深灰罩子）。改用动画进度判断是否已擦开。
-    function allReady() {
-      return videos.every(function (v) { return v.dataset.ready || v.dataset.fallback; });
+    gsap.set(vids, { scale: 1.15 });
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      gsap.set(masks, { scaleX: 0 });
+      gsap.set(vids, { scale: 1 });
+      gsap.set(cards, { opacity: 1, x: 0, y: 0 });
+      return;
     }
-    var wipeTimer = null;
-    function clearWipeTimer() { if (wipeTimer) { clearTimeout(wipeTimer); wipeTimer = null; } }
-    function playWipe() {
-      clearWipeTimer();
-      if (tl.progress() < 1) tl.play();   // 已完全擦开则不重复
-    }
-    function tryPlay() {
-      if (allReady()) { playWipe(); return; }
-      // 兜底超时：即使视频没备好也擦开，避免长期停在封面
-      clearWipeTimer();
-      wipeTimer = setTimeout(playWipe, 3500);
-    }
-    function onReady(e) {
-      if (!videos.includes(e.detail && e.detail.video)) return;
-      if (allReady() && wipeTimer) playWipe();  // 等待中的视频全部就绪，立即擦开
-    }
-    window.addEventListener('videoready', onReady);
-    ScrollTrigger.create({
-      trigger: grid, start: 'top 85%', end: 'bottom 15%',
-      onEnter: tryPlay,        // 从上往下进入
-      onEnterBack: tryPlay,    // 从下往上回滚进入（快速滑动常见，之前缺失）
-      onLeaveBack: function () {
-        clearWipeTimer();
-        tl.pause(0);           // 明确重置到覆盖态，等下次进入重新擦（reverse 在快速滑动中会卡在中间）
-      }
+
+    // 每张卡片初始状态：藏在其目标位置之外（向下 + 侧向偏移），带自身的旋转角
+    cards.forEach(function (card) {
+      var rot = getComputedStyle(card).getPropertyValue('--rot').trim() || '0deg';
+      gsap.set(card, { rotation: rot, yPercent: 130, xPercent: 0, opacity: 0,
+        transformOrigin: 'center center' });
     });
+
+    // 用 scrub 的 timeline 把四张卡片依次推入舞台，位置随滚动推进
+    var tl = gsap.timeline({
+      scrollTrigger: { trigger: sec, start: 'top top', end: 'bottom bottom', scrub: 0.8,
+        invalidateOnRefresh: true }
+    });
+    // 开头留一段空档：刚进入时只有铺底视频 + 大字，往下翻一段后卡片才开始叠上来
+    var startAt = 0.8;
+    cards.forEach(function (card, i) {
+      var at = startAt + i * 0.8;
+      tl.to(card, { yPercent: 0, opacity: 1, ease: 'power2.out', duration: 1 }, at);
+      tl.to(card.querySelector('video'), { scale: 1, ease: 'power2.out', duration: 0.8 }, at + 0.15);
+      tl.to(card.querySelector('.wipe-mask'), { scaleX: 0, ease: 'power3.inOut', duration: 0.9 }, at + 0.1);
+    });
+
+    // 标题随进入淡入、轻微上移；往回滚则淡出，回到只有底视频的状态
+    var head = document.querySelector('.works-headline');
+    if (head) {
+      gsap.fromTo(head, { opacity: 0.15, y: 30 }, { opacity: 1, y: 0, ease: 'none',
+        scrollTrigger: { trigger: sec, start: 'top 80%', end: 'top 10%', scrub: 0.6,
+          invalidateOnRefresh: true } });
+    }
   })();
 
   // reveal — staggered fade like reference stagger-fade
