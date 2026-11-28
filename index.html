@@ -154,8 +154,9 @@
               <stop offset="100%" stop-color="#141414" stop-opacity="0"/>
             </linearGradient>
           </defs>
-          <text x="50%" y="60%" text-anchor="middle" font-family="'Dancing Script','Great Vibes',cursive" font-size="112" font-weight="700" fill="none" stroke="url(#sigEdge)" stroke-width="3" transform="rotate(-7 320 100)">MIKEY CHEN</text>
-          <text x="50%" y="58%" text-anchor="middle" font-family="'Dancing Script','Great Vibes',cursive" font-size="112" font-weight="700" fill="url(#sigGrad)" transform="rotate(-7 320 100)">MIKEY CHEN</text>
+          <!-- 镂空字：无填充，笔画用浅色粗描边 + 深色细描边勾边，字内部完全透明，底图照片从笔画内透出 -->
+          <text x="50%" y="60%" text-anchor="middle" font-family="'Dancing Script','Great Vibes',cursive" font-size="112" font-weight="700" fill="none" stroke="url(#sigGrad)" stroke-width="6" stroke-linejoin="round" transform="rotate(-7 320 100)">MIKEY CHEN</text>
+          <text x="50%" y="60%" text-anchor="middle" font-family="'Dancing Script','Great Vibes',cursive" font-size="112" font-weight="700" fill="none" stroke="rgba(20,20,20,.35)" stroke-width="1.2" stroke-linejoin="round" transform="rotate(-7 320 100)">MIKEY CHEN</text>
         </svg>
       </div>
     </div>
@@ -170,7 +171,7 @@
     <div class="works-shade" aria-hidden="true"></div>
     <div class="works-headline">
       <p class="works-kicker">广告&nbsp;&nbsp;&nbsp;&nbsp;纪录片&nbsp;&nbsp;&nbsp;&nbsp;新闻采访</p>
-      <h2 class="works-hero-title">舞&nbsp;&nbsp;台&nbsp;&nbsp;与&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;镜&nbsp;&nbsp;头</h2>
+      <h2 class="works-hero-title"><span class="wt-left">舞台&amp;</span><span class="wt-right">镜头</span></h2>
     </div>
     <!-- 斜放叠层卡片：滚动后逐个出现，直接压在底视频之上 -->
     <div class="role-grid" id="roleGrid">

@@ -357,53 +357,53 @@ document.documentElement.classList.add('js');
           toggleActions: 'none play none reset' } });
   })();
 
-  // works — 参考 sophiaamoruso：底视频铺满，往下滚动时斜卡片逐个叠上来
+  // works — 参考 sophiaamoruso：底视频铺满，斜卡片逐个「滑入→停留→向上滑出」，标题随首个卡片滑出而上移消失
   (function () {
     var sec = document.querySelector('.works');
     var stage = document.querySelector('.works-stage');
     var cards = gsap.utils.toArray('.role--stack');
-    var masks = gsap.utils.toArray('.role--stack .wipe-mask');
-    var vids = gsap.utils.toArray('.role--stack video');
+    var head = document.querySelector('.works-headline');
     if (!sec || !stage || !cards.length) return;
 
-    // 遮罩擦开 + 视频放大复位（保留参考站 image-wipe 细节）
-    gsap.set(masks, { scaleX: 1 });
-    gsap.set(vids, { scale: 1.15 });
-
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      gsap.set(masks, { scaleX: 0 });
-      gsap.set(vids, { scale: 1 });
-      gsap.set(cards, { opacity: 1, x: 0, y: 0 });
+      gsap.set('.role--stack .wipe-mask', { scaleX: 0 });
+      gsap.set('.role--stack video', { scale: 1 });
+      gsap.set(cards, { opacity: 1, yPercent: 0 });
       return;
     }
 
-    // 每张卡片初始状态：藏在其目标位置之外（向下 + 侧向偏移），带自身的旋转角
+    // 每张卡片初始：藏在其目标位置下方，带自身旋转角
     cards.forEach(function (card) {
       var rot = getComputedStyle(card).getPropertyValue('--rot').trim() || '0deg';
-      gsap.set(card, { rotation: rot, yPercent: 130, xPercent: 0, opacity: 0,
-        transformOrigin: 'center center' });
+      gsap.set(card, { rotation: rot, yPercent: 135, opacity: 0, transformOrigin: 'center center' });
     });
+    gsap.set('.role--stack .wipe-mask', { scaleX: 1 });
+    gsap.set('.role--stack video', { scale: 1.15 });
 
-    // 用 scrub 的 timeline 把四张卡片依次推入舞台，位置随滚动推进
+    // 四张卡片依次：0.75 段滑入 → 停留 → 0.75 段继续向上滑出（离开页面）
+    // 每张总周期 2.2，彼此错开 1.35，形成连续接力
     var tl = gsap.timeline({
-      scrollTrigger: { trigger: sec, start: 'top top', end: 'bottom bottom', scrub: 0.8,
+      scrollTrigger: { trigger: sec, start: 'top top', end: 'bottom bottom', scrub: 0.7,
         invalidateOnRefresh: true }
     });
-    // 开头留一段空档：刚进入时只有铺底视频 + 大字，往下翻一段后卡片才开始叠上来
-    var startAt = 0.8;
+    var gap = 1.5, step = 1.35;
     cards.forEach(function (card, i) {
-      var at = startAt + i * 0.8;
-      tl.to(card, { yPercent: 0, opacity: 1, ease: 'power2.out', duration: 1 }, at);
-      tl.to(card.querySelector('video'), { scale: 1, ease: 'power2.out', duration: 0.8 }, at + 0.15);
-      tl.to(card.querySelector('.wipe-mask'), { scaleX: 0, ease: 'power3.inOut', duration: 0.9 }, at + 0.1);
+      var at = gap + i * step;
+      // 滑入：从下方到目标位置
+      tl.to(card, { yPercent: 0, opacity: 1, ease: 'power2.out', duration: 0.75 }, at);
+      tl.to(card.querySelector('video'), { scale: 1, ease: 'power2.out', duration: 0.7 }, at + 0.1);
+      tl.to(card.querySelector('.wipe-mask'), { scaleX: 0, ease: 'power3.inOut', duration: 0.7 }, at + 0.05);
+      // 继续下滑：向上滑出页面（yPercent 变负 + 淡出）
+      tl.to(card, { yPercent: -140, opacity: 0, ease: 'power2.in', duration: 0.75 }, at + 1.15);
     });
 
-    // 标题随进入淡入、轻微上移；往回滚则淡出，回到只有底视频的状态
-    var head = document.querySelector('.works-headline');
+    // 标题：初始可见（上下居中），从第一个卡片滑出开始随之一路上移并淡出
     if (head) {
-      gsap.fromTo(head, { opacity: 0.15, y: 30 }, { opacity: 1, y: 0, ease: 'none',
-        scrollTrigger: { trigger: sec, start: 'top 80%', end: 'top 10%', scrub: 0.6,
-          invalidateOnRefresh: true } });
+      var headTl = gsap.timeline({
+        scrollTrigger: { trigger: sec, start: 'top top', end: 'bottom bottom', scrub: 0.7,
+          invalidateOnRefresh: true }
+      });
+      headTl.to(head, { y: -260, opacity: 0, ease: 'power1.in', duration: 1.4 }, gap + 1.0);
     }
   })();
 
@@ -459,11 +459,22 @@ document.documentElement.classList.add('js');
       [].slice.call(mid.querySelectorAll('.theater-big')).forEach(function (el) { el.style.removeProperty('font-size'); });
       return;
     }
-    var xian = spans[0].getBoundingClientRect();  // 线
-    var chang = spans[3].getBoundingClientRect(); // 场
+    // 用 Range 测「墨迹」边缘：letter-spacing 负值会让 scrollWidth 末尾留空白，
+    // 导致盒子对齐了但视觉墨迹没到边（用户反馈右边差一截）。改按真实墨迹对齐。
+    function inkEdge(el, side) {
+      var rg = document.createRange();
+      rg.selectNodeContents(el);
+      var rects = [].slice.call(rg.getClientRects());
+      if (!rects.length) return side === 'right' ? el.getBoundingClientRect().right : el.getBoundingClientRect().left;
+      return side === 'right'
+        ? Math.max.apply(null, rects.map(function (r) { return r.right; }))
+        : Math.min.apply(null, rects.map(function (r) { return r.left; }));
+    }
+    var xianInkL = inkEdge(spans[0], 'left');   // 线 墨迹左
+    var changInkR = inkEdge(spans[3], 'right'); // 场 墨迹右
     var copyL = copy.getBoundingClientRect().left;
-    var targetL = xian.left - copyL;
-    var targetW = chang.right - xian.left;
+    var targetL = xianInkL - copyL;
+    var targetW = changInkR - xianInkL;
     if (targetW <= 0) return;
     mid.style.marginLeft = targetL.toFixed(2) + 'px';
     mid.style.width = targetW.toFixed(2) + 'px';
@@ -471,7 +482,12 @@ document.documentElement.classList.add('js');
       el.style.fontSize = '';
       var base = parseFloat(getComputedStyle(el).fontSize); // CSS clamp 基准
       var natural = el.scrollWidth;
-      if (natural > 0) el.style.fontSize = (base * targetW / natural).toFixed(2) + 'px';
+      if (natural <= 0) return;
+      var fs = base * targetW / natural;
+      el.style.fontSize = fs.toFixed(2) + 'px';
+      // 墨迹校准：把字号按「目标墨迹宽 / 当前墨迹宽」再缩放一次
+      var inkW = inkEdge(el, 'right') - inkEdge(el, 'left');
+      if (inkW > 0) el.style.fontSize = (fs * targetW / inkW).toFixed(2) + 'px';
     });
   }
 
