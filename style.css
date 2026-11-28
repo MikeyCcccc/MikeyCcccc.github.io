@@ -163,8 +163,8 @@ a:active{opacity:.7}
 /* 签名：原尺寸/透明叠加风格，回到 theater-visual（照片列）内压在照片下缘可见，
    尾部少量越界形成破页。theater z-index 保证破页部分盖在 works 之上 */
 /* 细长花体：用 top 锚定主体在照片下缘（约 visual 90%），SVG 加高让尾部下垂破到 works 页 */
-.theater-signature{position:absolute;left:50%;top:96%;bottom:auto;width:min(100%,680px);transform:translateX(-50%);
-  z-index:20;pointer-events:none;opacity:.85;mix-blend-mode:screen}
+.theater-signature{position:absolute;left:50%;top:88%;bottom:auto;width:min(100%,680px);transform:translateX(-50%);
+  z-index:20;pointer-events:none;opacity:.5;mix-blend-mode:screen}
 .theater-signature svg{width:100%;height:auto;display:block}
 @media(prefers-reduced-motion:reduce){.theater-mark svg{animation:none}}
 /* 桌面端剧场页：参考 Sophia $350M 版式，左侧字号整体加大、右侧照片+签名放大、两列贴近 */
@@ -230,28 +230,45 @@ a:active{opacity:.7}
   background:var(--ink-62);color:var(--mint);font-size:.85rem;letter-spacing:.06em;
   text-align:center;padding:1rem;border:1px dashed var(--mint-hair)}
 
-/* 6 WORK EXPERIENCE — 黑底双图轮播（模仿首图 slide + parallax 假翻页） */
-.work-exp{position:relative;background:var(--black);color:var(--white);overflow:hidden;isolation:isolate}
-.work-exp-media{position:absolute;inset:0;z-index:0}
-.work-exp-swiper,.work-exp-swiper .swiper-wrapper,.work-exp-swiper .swiper-slide{width:100%;height:100%;position:relative}
-.work-exp-swiper .swiper-slide{z-index:1;overflow:hidden}
-.work-exp-swiper .swiper-slide-active{z-index:10}
-.work-exp-swiper .slide-media{position:absolute;top:0;width:130%;max-width:none;height:100%;object-fit:cover;
-  object-position:center 38%;will-change:transform}
-.work-exp-shade{position:absolute;inset:0;z-index:2;pointer-events:none;
-  background:linear-gradient(90deg,var(--ink-92) 0%,var(--ink-78) 42%,var(--ink-50) 72%,var(--ink-62) 100%),
-             linear-gradient(0deg,var(--ink-55) 0%,rgba(29,29,31,0) 30%)}
-.work-exp-inner{position:relative;z-index:3}
-.work-exp .eyebrow{color:var(--mint)}
-.work-exp .sec-title{color:var(--white)}
-.work-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2rem;margin-top:2rem}
-.work-item{border-top:2px solid var(--ink);padding-top:1.2rem}
-.work-item .yr{font-family:var(--serif);font-size:.72rem;color:var(--muted);letter-spacing:.06em}
-.work-item h3{font-family:var(--serif);font-size:1.6rem;margin:.5rem 0 .4rem}
-.work-item p{font-family:var(--serif);font-size:.9rem;line-height:1.7;margin:0}
-.work-exp .work-item{border-top-color:var(--hair-55);color:var(--white)}
-.work-exp .work-item .yr{color:var(--mint)}
-.work-exp .work-item p{color:var(--paper-90)}
+/* 6 WORK EXPERIENCE — 参考 sophiaamoruso FOUNDERS 版式（淡蓝底 + 超大字 + 斜叠卡片） */
+.work-exp{position:relative;background:#e8eef6;color:#14161c;overflow:hidden;isolation:isolate;
+  padding:clamp(5rem,9vh,8rem) var(--pad) clamp(4rem,7vh,6rem)}
+.work-exp-inner{position:relative;z-index:1;max-width:var(--maxw);margin:0 auto}
+.fx-head{position:relative}
+/* 顶部小字：左「曾经」/ 中「担任」/ 角落「另一种履历」 */
+.fx-kicker{display:flex;align-items:baseline;gap:2.4rem;font-family:var(--sans);
+  font-size:clamp(1rem,2vw,1.6rem);font-weight:700;letter-spacing:.06em;margin-bottom:.4rem}
+.fx-sub{margin-left:auto;font-family:var(--serif);font-size:clamp(.85rem,1.4vw,1.05rem);
+  font-weight:400;letter-spacing:.08em;color:#5b6573}
+/* 超大主标题：data-fill 由 JS 精确撑满一行宽度（inline-block 才能测到真实文字宽） */
+.fx-title{display:inline-block;font-family:var(--sans);font-weight:800;white-space:nowrap;line-height:.86;
+  letter-spacing:-.03em;margin:0;color:#14161c;font-size:clamp(2.4rem,11vw,10rem)}
+/* 主标题下方：& 靠左中、PCG营收小组靠右 */
+.fx-tail{display:flex;align-items:baseline;gap:2.4rem;margin-top:.7rem}
+.fx-t-amp{font-family:var(--sans);font-size:clamp(2rem,4.5vw,4rem);font-weight:700;
+  line-height:1;margin-left:8%}
+.fx-t-right{font-family:var(--sans);font-size:clamp(1rem,2vw,1.6rem);font-weight:700;
+  letter-spacing:.06em;margin-left:auto}
+/* 三张斜叠卡片：叠压在大字上，滚动时逐张从下方滑入 */
+.fx-stack{position:relative;height:clamp(340px,46vw,620px);margin-top:-1.5vw}
+.fx-card{position:absolute;margin:0;padding:.5rem;background:#fff;box-sizing:border-box;
+  aspect-ratio:4/5;box-shadow:0 24px 60px rgba(20,30,50,.28);will-change:transform,opacity;
+  transform:rotate(var(--rot,0deg))}
+.fx-card--video{aspect-ratio:16/10}
+.fx-card img,.fx-card video{display:block;width:100%;height:100%;object-fit:cover;background:#dbe3ee}
+.fx-card:nth-child(1){width:34%;left:2%;top:4%;--rot:-7deg;z-index:3}
+.fx-card:nth-child(2){width:29%;left:37%;top:16%;--rot:4deg;z-index:4}
+.fx-card:nth-child(3){width:31%;right:3%;top:6%;--rot:-5deg;z-index:2}
+.js .fx-card{opacity:0}
+@media(max-width:860px){
+  .fx-kicker{gap:1rem}
+  .fx-tail{gap:1rem}
+  .fx-t-amp{margin-left:14%}
+  .fx-stack{height:clamp(310px,82vw,470px);margin-top:0}
+  .fx-card:nth-child(1){width:46%;left:1%;top:2%;--rot:-7deg}
+  .fx-card:nth-child(2){width:44%;right:1%;left:auto;top:26%;--rot:6deg}
+  .fx-card:nth-child(3){width:48%;left:22%;right:auto;top:52%;--rot:-4deg}
+}
 
 /* 7 WORKS / SHOWREEL */
 /* WORKS：参考 sophiaamoruso 全屏视频页 —— 底视频铺满，滚动时斜卡片叠上来 */
@@ -261,7 +278,7 @@ a:active{opacity:.7}
 .works-shade{position:absolute;inset:0;z-index:1;pointer-events:none;
   background:linear-gradient(180deg,rgba(0,0,0,.18) 0%,rgba(0,0,0,0) 38%,rgba(0,0,0,.06) 62%,rgba(0,0,0,.34) 100%)}
 /* 标题初始下移到上下居中区域（约 42%），随滚动整体上移 */
-.works-headline{position:absolute;left:var(--pad);right:var(--pad);top:42%;z-index:2;color:#fff;pointer-events:none}
+.works-headline{position:absolute;left:var(--pad);right:var(--pad);top:52%;z-index:2;color:#fff;pointer-events:none}
 .works-kicker{font-family:var(--sans);font-weight:700;font-size:clamp(1rem,2.4vw,2rem);letter-spacing:.42em;
   margin:0 0 .6rem;color:#fff;text-shadow:0 2px 20px rgba(0,0,0,.45)}
 .works-hero-title{display:flex;justify-content:space-between;align-items:baseline;
@@ -275,11 +292,11 @@ a:active{opacity:.7}
 /* 卡片放大、四角错落分散，不挤在一起（参考截图：大幅斜放的剪辑剧照） */
 .role--stack{position:absolute;width:clamp(320px,40vw,620px);background:var(--paper);padding:.9rem;
   box-shadow:0 34px 80px rgba(0,0,0,.5);pointer-events:auto;will-change:transform,opacity}
-/* 四张分别落左上 / 右下 / 右上 / 左下，彼此拉开距离 */
-.role--stack:nth-child(1){top:16%;left:6%;--rot:-9deg}
-.role--stack:nth-child(2){top:46%;right:5%;--rot:8deg}
-.role--stack:nth-child(3){top:9%;right:14%;--rot:-6deg}
-.role--stack:nth-child(4){top:56%;left:16%;--rot:11deg}
+/* 四张严格左-右-左-右交替，垂直位置错开，彼此拉开距离 */
+.role--stack:nth-child(1){top:20%;left:6%;--rot:-9deg}
+.role--stack:nth-child(2){top:42%;right:5%;--rot:8deg}
+.role--stack:nth-child(3){top:14%;left:16%;--rot:-6deg}
+.role--stack:nth-child(4){top:50%;right:16%;--rot:11deg}
 .role-wipe{position:relative;overflow:hidden;background:var(--paper)}
 .role img,.role video{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;display:block;background:transparent}
 .role .role-wipe video{transform:scale(1.15);transform-origin:center;will-change:transform}
@@ -394,7 +411,7 @@ a:active{opacity:.7}
   .work-grid{grid-template-columns:minmax(0,1fr)}
   /* works 斜卡片在窄屏收窄 */
   .role--stack{width:clamp(220px,62vw,360px);padding:.55rem}
-  .works-headline{top:36%}
+  .works-headline{top:46%}
   .works-kicker{font-size:clamp(.85rem,2.6vw,1.2rem)}
   .works-hero-title{font-size:clamp(2rem,10vw,4rem)}
   .dance-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -417,8 +434,8 @@ a:active{opacity:.7}
   .role--stack{width:min(78vw,330px)}
   .role--stack:nth-child(1){top:34%;left:6%;--rot:-9deg}
   .role--stack:nth-child(2){top:46%;right:5%;--rot:8deg}
-  .role--stack:nth-child(3){top:26%;right:12%;--rot:-6deg}
-  .role--stack:nth-child(4){top:58%;left:20%;--rot:11deg}
+  .role--stack:nth-child(3){top:26%;left:10%;--rot:-6deg}
+  .role--stack:nth-child(4){top:58%;right:16%;--rot:11deg}
   /* 街舞：窄屏 textPath 贴边被裁切，改用上下两条滚动文字 */
   .dance-orbit{display:none}
   .dance-orbit-mobile{display:block;overflow:hidden;white-space:nowrap;background:var(--mint);
@@ -559,7 +576,7 @@ a:active{opacity:.7}
   .dance-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
   /* 作品斜卡片：横屏高度有限，缩小并贴近中部 */
   .role--stack{width:clamp(240px,40vw,380px);padding:.6rem}
-  .works-headline{top:34%}
+  .works-headline{top:44%}
   .works-hero-title{font-size:clamp(2.2rem,7vh,4.4rem)}
   .works-kicker{font-size:clamp(.9rem,2.6vh,1.4rem)}
   /* 教育：恢复三栏 */

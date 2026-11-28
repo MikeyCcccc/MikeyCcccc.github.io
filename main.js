@@ -3,6 +3,7 @@
 document.documentElement.classList.add('js');
 (function () {
   gsap.registerPlugin(ScrollTrigger);
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // hero swiper — from reference: slide + parallax + autoplay 2s
   new Swiper('.hero-swiper', {
@@ -11,12 +12,18 @@ document.documentElement.classList.add('js');
     autoplay: { delay: 2200 }
   });
 
-  // work experience — 黑底双图轮播，同款 slide + parallax 假翻页
-  new Swiper('.work-exp-swiper', {
-    effect: 'slide', loop: true, parallax: true,
-    slidesPerView: 1, speed: 1100,
-    autoplay: { delay: 2600 }
-  });
+  // work experience — FOUNDERS 版式：三张斜叠卡片随滚动错开滑入并轻微回正
+  (function () {
+    var fxCards = gsap.utils.toArray('.fx-card');
+    if (!fxCards.length) return;
+    var rotOf = function (i, el) { return parseFloat(getComputedStyle(el).getPropertyValue('--rot')) || 0; };
+    if (reduceMotion) { gsap.set(fxCards, { opacity: 1 }); return; }
+    gsap.fromTo(fxCards,
+      { y: 130, opacity: 0, rotation: function (i, el) { return rotOf(i, el) + (i % 2 ? 9 : -9); } },
+      { y: 0, opacity: 1, rotation: rotOf, duration: 0.95, stagger: 0.18, ease: 'power3.out',
+        scrollTrigger: { trigger: '.fx-stack', start: 'top 82%', toggleActions: 'play none none none' } }
+    );
+  })();
 
   // hero — 大标题随下滑精确飞到 nav 的 ACTOR·DANCER 上方（brand-name 位置）
   // 关键修复：起止坐标全部用「函数式值」，ScrollTrigger 每次 refresh 都重新测量。
@@ -26,7 +33,6 @@ document.documentElement.classList.add('js');
   var fly = null;
   var heroEl = document.querySelector('.hero');
   // 桌面与手机都启用（手机竖屏也要有标题飞入顶栏的特效），仅尊重减弱动效偏好
-  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!reduceMotion && heroH1 && heroEl) {
     fly = document.createElement('div');
     fly.className = 'name-fly';
@@ -267,7 +273,8 @@ document.documentElement.classList.add('js');
   if (strip && visual) {
     gsap.fromTo(strip,
       { y: function () { return visual.clientHeight * 0.95; } },
-      { y: function () { return -(strip.scrollHeight - visual.clientHeight) - visual.clientHeight * 0.15; },
+      // 终点：最后一张照片底边停在签名所在高度（visual 88%）附近，确保签名始终压在照片上、下方不留空条
+      { y: function () { return -(strip.scrollHeight - visual.clientHeight) - visual.clientHeight * 0.03; },
         ease: 'none',
         scrollTrigger: { trigger: '.theater', start: 'top top', end: 'bottom bottom',
           scrub: 0.5, invalidateOnRefresh: true }
@@ -380,30 +387,31 @@ document.documentElement.classList.add('js');
     gsap.set('.role--stack .wipe-mask', { scaleX: 1 });
     gsap.set('.role--stack video', { scale: 1.15 });
 
-    // 四张卡片依次：0.75 段滑入 → 停留 → 0.75 段继续向上滑出（离开页面）
-    // 每张总周期 2.2，彼此错开 1.35，形成连续接力
+    // 四张卡片：每张 0.8 段滑入 → 停留 → 0.8 段向上滑出；彼此错开 0.45（约半程），
+    // 形成「前一个全现时后一个刚半现」的左-右-左-右接力
     var tl = gsap.timeline({
       scrollTrigger: { trigger: sec, start: 'top top', end: 'bottom bottom', scrub: 0.7,
         invalidateOnRefresh: true }
     });
-    var gap = 1.5, step = 1.35;
+    var gap = 1.0, step = 0.45, inDur = 0.8;
     cards.forEach(function (card, i) {
       var at = gap + i * step;
       // 滑入：从下方到目标位置
-      tl.to(card, { yPercent: 0, opacity: 1, ease: 'power2.out', duration: 0.75 }, at);
+      tl.to(card, { yPercent: 0, opacity: 1, ease: 'power2.out', duration: inDur }, at);
       tl.to(card.querySelector('video'), { scale: 1, ease: 'power2.out', duration: 0.7 }, at + 0.1);
       tl.to(card.querySelector('.wipe-mask'), { scaleX: 0, ease: 'power3.inOut', duration: 0.7 }, at + 0.05);
-      // 继续下滑：向上滑出页面（yPercent 变负 + 淡出）
-      tl.to(card, { yPercent: -140, opacity: 0, ease: 'power2.in', duration: 0.75 }, at + 1.15);
+      // 继续下滑：向上滑出页面（yPercent 变负 + 淡出），停 1.2 段后滑出
+      tl.to(card, { yPercent: -140, opacity: 0, ease: 'power2.in', duration: 0.8 }, at + 1.2);
     });
 
-    // 标题：初始可见（上下居中），从第一个卡片滑出开始随之一路上移并淡出
+    // 标题：初始可见（上下居中），一开始下滑就上移，到第一个卡片完全出现时已彻底消失
     if (head) {
       var headTl = gsap.timeline({
         scrollTrigger: { trigger: sec, start: 'top top', end: 'bottom bottom', scrub: 0.7,
           invalidateOnRefresh: true }
       });
-      headTl.to(head, { y: -260, opacity: 0, ease: 'power1.in', duration: 1.4 }, gap + 1.0);
+      // 从 0 开始上移，在 gap+inDur（第一个卡片全现）时 opacity 归零
+      headTl.to(head, { y: -200, opacity: 0, ease: 'power1.in', duration: gap + inDur }, 0);
     }
   })();
 

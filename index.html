@@ -83,9 +83,9 @@
     <div class="gcell gcell--gif gcell--bl">
       <!-- 桌面 / 横屏：三片段并排（保留原版式，不要被竖屏轮播结构覆盖） -->
       <div class="gcell-duo">
-        <video data-src="assets/moments/reel-duo-a.mp4" poster="assets/moments/reel-duo-a-poster.webp" muted playsinline preload="none"></video>
-        <video data-src="assets/moments/reel-duo-b.mp4" poster="assets/moments/reel-duo-b-poster.webp" muted playsinline preload="none"></video>
-        <video data-src="assets/moments/reel-duo-c.mp4" poster="assets/moments/reel-duo-c-poster.webp" muted playsinline preload="none"></video>
+        <video data-src="assets/moments/reel-duo-a.mp4" poster="assets/moments/reel-duo-a-poster.webp" muted loop playsinline preload="none"></video>
+        <video data-src="assets/moments/reel-duo-b.mp4" poster="assets/moments/reel-duo-b-poster.webp" muted loop playsinline preload="none"></video>
+        <video data-src="assets/moments/reel-duo-c.mp4" poster="assets/moments/reel-duo-c-poster.webp" muted loop playsinline preload="none"></video>
       </div>
       <!-- 竖屏：同一格轮播两个片段，任一时刻只显示一个并居中 -->
       <div class="reel-rotor" data-rotor>
@@ -141,7 +141,7 @@
       </div>
       <!-- 签名：压在照片下缘的透明叠加字，尾部少量破页到下一页（回到上一版 Dancing Script） -->
       <div class="theater-signature" aria-hidden="true">
-        <svg viewBox="0 0 640 180" role="presentation">
+        <svg viewBox="0 0 760 180" role="presentation">
           <defs>
             <linearGradient id="sigGrad" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0%" stop-color="#eaf1f7"/>
@@ -149,14 +149,9 @@
               <stop offset="70%" stop-color="#bfe3d8"/>
               <stop offset="100%" stop-color="#f6f6f3"/>
             </linearGradient>
-            <linearGradient id="sigEdge" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#141414" stop-opacity=".22"/>
-              <stop offset="100%" stop-color="#141414" stop-opacity="0"/>
-            </linearGradient>
           </defs>
-          <!-- 镂空字：无填充，笔画用浅色粗描边 + 深色细描边勾边，字内部完全透明，底图照片从笔画内透出 -->
-          <text x="50%" y="60%" text-anchor="middle" font-family="'Dancing Script','Great Vibes',cursive" font-size="112" font-weight="700" fill="none" stroke="url(#sigGrad)" stroke-width="6" stroke-linejoin="round" transform="rotate(-7 320 100)">MIKEY CHEN</text>
-          <text x="50%" y="60%" text-anchor="middle" font-family="'Dancing Script','Great Vibes',cursive" font-size="112" font-weight="700" fill="none" stroke="rgba(20,20,20,.35)" stroke-width="1.2" stroke-linejoin="round" transform="rotate(-7 320 100)">MIKEY CHEN</text>
+          <!-- 镂空字：无填充，浅色描边，字内部完全透明，底图照片从笔画内透出；viewBox 加宽给 EN 右上角留余量 -->
+          <text x="50%" y="58%" text-anchor="middle" font-family="'Dancing Script','Great Vibes',cursive" font-size="112" font-weight="700" fill="none" stroke="url(#sigGrad)" stroke-width="6" stroke-linejoin="round" transform="rotate(-7 380 90)">MIKEY CHEN</text>
         </svg>
       </div>
     </div>
@@ -238,30 +233,20 @@
   </div>
 </section>
 
-<!-- 6 WORK EXPERIENCE -->
-<section class="work-exp">
-  <div class="work-exp-media">
-    <div class="swiper work-exp-swiper">
-      <div class="swiper-wrapper">
-        <div class="swiper-slide"><img class="slide-media" src="assets/work-exp/work-bg-1.webp" alt="Danceisland 街舞工作室" data-swiper-parallax-x="30%" data-swiper-parallax-scale="1.2"></div>
-        <div class="swiper-slide"><img class="slide-media" src="assets/work-exp/work-bg-2.webp" alt="腾讯工作证" data-swiper-parallax-x="30%" data-swiper-parallax-scale="1.2"></div>
-      </div>
-    </div>
-    <div class="work-exp-shade"></div>
-  </div>
+<!-- 6 WORK EXPERIENCE / 另一种履历（参考 sophiaamoruso FOUNDERS 版式） -->
+<section class="work-exp" id="workexp">
   <div class="wrap work-exp-inner">
-    <h2 class="sec-title reveal">另一种履历</h2>
-    <div class="work-grid">
-      <div class="work-item reveal">
-        <div class="yr">2021.04 至 2024.12　南京，中国</div>
-        <h3>南京舞岛文化传媒有限公司</h3>
-        <p>街舞工作室创始人</p>
-      </div>
-      <div class="work-item reveal">
-        <div class="yr">2017.05 至 2019.07　深圳，中国</div>
-        <h3>腾讯科技（深圳）有限公司</h3>
-        <p>产品经理：社交平台部营收小组</p>
-      </div>
+    <!-- 大字版式：上方小字左「曾经 担任」/ 右「PCG营收小组」，中间大字 + & -->
+    <div class="fx-head">
+      <div class="fx-kicker"><span class="fx-k-left">曾经</span><span class="fx-k-mid">担任</span><span class="fx-sub">另一种履历</span></div>
+      <h2 class="fx-title" data-fill>腾讯公司产品经理</h2>
+      <div class="fx-tail"><span class="fx-t-amp">&amp;</span><span class="fx-t-right">PCG营收小组</span></div>
+    </div>
+    <!-- 三张斜叠滑入的内容：工牌照 / 腾讯T恤人像 / 视频 -->
+    <div class="fx-stack" id="fxStack">
+      <figure class="fx-card" style="--i:0"><img src="assets/work-exp/tencent-2.webp" alt="腾讯工作证" loading="lazy" decoding="async"></figure>
+      <figure class="fx-card" style="--i:1"><img src="assets/work-exp/tencent-1.webp" alt="腾讯产品经理时期" loading="lazy" decoding="async"></figure>
+      <figure class="fx-card fx-card--video" style="--i:2"><video data-src="assets/work-exp/tencent-video.mp4" poster="assets/work-exp/tencent-video-poster.webp" muted loop playsinline preload="none"></video></figure>
     </div>
   </div>
 </section>
