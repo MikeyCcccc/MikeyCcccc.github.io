@@ -433,14 +433,17 @@ document.documentElement.classList.add('js');
       var groupAt = gap + g * groupGap;
       pair.forEach(function (card, j) {
         var at = groupAt + j * step;
-        // 整体出现：从下方滑入到目标位置，无擦入遮罩、无缩放
-        tl.to(card, { yPercent: 0, opacity: 1, ease: 'power2.out', duration: inDur }, at);
+        // 出现：瞬间显示（不淡入）+ 从下方滑入到位，无擦入遮罩、无缩放
+        tl.set(card, { opacity: 1 }, at);
+        tl.to(card, { yPercent: 0, ease: 'power2.out', duration: inDur }, at);
       });
       // 第二张滑入开始时刻(groupAt+step) + inDur = 第二张全现；紧接其后立刻整组上滑。
-      // 下一组在 groupAt+groupGap(=2.0) 才开始出现，晚于本组上滑起点，确保「第二个出来就移，不等第三个」。
+      // 下一组在 groupAt+groupGap 才开始出现，晚于本组上滑起点，确保「第二个出来就移，不等第三个」。
       var slideOutAt = groupAt + step + inDur + 0.05;
       pair.forEach(function (card) {
-        tl.to(card, { yPercent: -150, opacity: 0, ease: 'power2.in', duration: outDur }, slideOutAt);
+        // 消失：纯位移上滑出视口，划出后瞬间隐藏（不淡出）
+        tl.to(card, { yPercent: -150, ease: 'power2.in', duration: outDur }, slideOutAt);
+        tl.set(card, { opacity: 0 }, slideOutAt + outDur);
       });
     });
 
