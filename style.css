@@ -131,7 +131,7 @@ a:active{opacity:.7}
 @media (prefers-reduced-motion:reduce){.star{animation:none}}
 
 /* 3 THEATER / 线下剧场 — 参考 Sophia $350M 版式 */
-.theater{background:var(--white);height:380vh;position:relative}
+.theater{background:var(--white);height:380vh;position:relative;z-index:2}
 .theater-grid{position:sticky;top:0;height:100svh;display:grid;
   grid-template-columns:minmax(0,1.35fr) minmax(0,.65fr);gap:clamp(1.5rem,4vw,4rem);
   align-items:stretch;padding-top:calc(var(--nav-h) + 3vh);padding-bottom:4vh}
@@ -150,7 +150,9 @@ a:active{opacity:.7}
 .theater-track span{white-space:nowrap}
 @keyframes theater-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media (prefers-reduced-motion:reduce){.theater-track{animation:none}}
-.theater-visual{position:relative;overflow:hidden;min-height:0}
+.theater-visual{position:relative;overflow:visible;min-height:0}
+/* 照片滚动单独裁剪：theater-visual 放开 overflow 让签名尾部能破页到下一页 */
+.theater-clip{position:absolute;inset:0;overflow:hidden}
 .theater-strip{display:flex;flex-direction:column;gap:1.1rem;will-change:transform}
 .theater-card{position:relative;width:100%;flex:none;overflow:hidden;background:var(--surface)}
 .theater-card img{width:100%;height:auto;display:block}
@@ -158,9 +160,10 @@ a:active{opacity:.7}
   z-index:4;color:var(--ink);pointer-events:none;opacity:.9}
 .theater-mark svg{width:100%;height:auto;display:block;animation:mark-float 6s ease-in-out infinite}
 @keyframes mark-float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(2deg)}}
-/* 签名放大并下移到 theater 底部外，跨越交界延伸到 works 顶部；z-index 高于 works 保证可见 */
-.theater-signature{position:absolute;left:50%;bottom:-13vh;width:min(96%,1080px);transform:translateX(-50%);
-  z-index:20;pointer-events:none;opacity:.9}
+/* 签名：原尺寸/透明叠加风格，回到 theater-visual（照片列）内压在照片下缘可见，
+   尾部少量越界形成破页。theater z-index 保证破页部分盖在 works 之上 */
+.theater-signature{position:absolute;left:50%;bottom:-4vh;width:min(84%,680px);transform:translateX(-50%);
+  z-index:20;pointer-events:none;opacity:.82;mix-blend-mode:screen}
 .theater-signature svg{width:100%;height:auto;display:block}
 @media(prefers-reduced-motion:reduce){.theater-mark svg{animation:none}}
 
@@ -171,7 +174,7 @@ a:active{opacity:.7}
 .edu-headline{font-family:var(--sans);font-weight:700;font-size:clamp(2.6rem,8vw,7rem);line-height:1;margin:0;
   display:flex;align-items:center;gap:.35em;white-space:nowrap}
 .edu-star{width:.42em;height:.42em;flex:none;color:var(--white)}
-.edu-awards{font-family:var(--serif);font-weight:700;color:var(--white);
+.edu-awards{font-family:var(--serif);font-weight:400;color:var(--white);
   font-size:clamp(1rem,2vw,1.5rem);line-height:1.5;letter-spacing:.04em;margin:.9rem 0 0}
 .edu-stage{position:relative;min-height:105vh;display:grid;
   grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) minmax(0,1fr);

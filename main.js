@@ -364,25 +364,25 @@ document.documentElement.classList.add('js');
     footer.style.setProperty('--fpor-bottom', Math.max(0, dist).toFixed(2) + 'px');
   }
 
-  // 剧场数字对齐：让"观众人数 / 300,000+"各自左边缘贴"剧"左、右边缘贴"场"右。
+  // 剧场数字对齐：让"观众人数 / 300,000+"各自左边缘贴"线"左、右边缘贴"场"右（即四字整行宽度）。
   // 两行字数不同，各自独立按目标宽度反算字号（等比缩放字高，不变形）。
   function alignTheaterBig() {
     var copy = document.querySelector('.theater-copy');
     var spans = document.querySelectorAll('.theater-top span');
     var mid = document.querySelector('.theater-mid');
     if (!copy || !mid || spans.length < 4) return;
-    // 仅桌面端对齐；手机端（竖屏/横屏）四字紧凑，强行对齐会把数字压到 ~13px，用户要求保持原样
+    // 仅桌面端对齐；手机端（竖屏/横屏）四字紧凑，用户要求保持原样
     if (window.innerWidth <= 860) {
       mid.style.removeProperty('margin-left');
       mid.style.removeProperty('width');
       [].slice.call(mid.querySelectorAll('.theater-big')).forEach(function (el) { el.style.removeProperty('font-size'); });
       return;
     }
-    var ju = spans[2].getBoundingClientRect();   // 剧
+    var xian = spans[0].getBoundingClientRect();  // 线
     var chang = spans[3].getBoundingClientRect(); // 场
     var copyL = copy.getBoundingClientRect().left;
-    var targetL = ju.left - copyL;
-    var targetW = chang.right - ju.left;
+    var targetL = xian.left - copyL;
+    var targetW = chang.right - xian.left;
     if (targetW <= 0) return;
     mid.style.marginLeft = targetL.toFixed(2) + 'px';
     mid.style.width = targetW.toFixed(2) + 'px';
