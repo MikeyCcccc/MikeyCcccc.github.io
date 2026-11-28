@@ -18,12 +18,12 @@ document.documentElement.classList.add('js');
     var fxSec = document.querySelector('.work-exp');
     if (!fxCards.length || !fxSec) return;
     if (reduceMotion) { gsap.set(fxCards, { opacity: 1, y: 0 }); return; }
-    // scrub 绑定整个 section：从素材下缘刚入视口到 section 走完，
-    // 三张卡片由下方升起到文字区并继续上移，形成「下滑时照片往上叠在文字上」
+    // 文字区 sticky 贴顶固定，素材在其上继续上移叠入。
+    // scrub 绑定整个 200vh section：sticky 周期内素材由下方升到文字区并继续上移。
     gsap.fromTo(fxCards,
-      { y: function () { return window.innerHeight * 0.45; }, opacity: 0 },
-      { y: -window.innerHeight * 0.12, opacity: 1, ease: 'none', stagger: 0.06,
-        scrollTrigger: { trigger: fxSec, start: 'top 78%', end: 'bottom 55%', scrub: 0.7,
+      { y: function () { return window.innerHeight * 0.55; }, opacity: 0 },
+      { y: -window.innerHeight * 0.18, opacity: 1, ease: 'none', stagger: 0.05,
+        scrollTrigger: { trigger: fxSec, start: 'top top', end: 'bottom bottom', scrub: 0.7,
           invalidateOnRefresh: true } }
     );
   })();
@@ -167,6 +167,16 @@ document.documentElement.classList.add('js');
       // rotor 内的视频由下方轮播器单独接管，避免默认播放器和轮播同时 play
       if (!v.hasAttribute('data-rotor')) playObserver.observe(v);
     });
+    // 作品页视频被 GSAP 初始移到视口下方，观察器要滚到附近才赋 src，
+    // 境外源站下载慢导致滑出时仍卡第一帧。首屏加载后主动分批预载，错开带宽争抢：
+    // 先预载铺底 showreel，2 秒后再预载四个卡片视频。
+    var bgReel = document.querySelector('#showreel');
+    if (bgReel && bgReel.hasAttribute('data-src')) { bgReel.preload = 'auto'; attachVideoSource(bgReel); }
+    setTimeout(function () {
+      [].slice.call(document.querySelectorAll('.role--stack video')).forEach(function (v) {
+        if (v.hasAttribute('data-src')) { v.preload = 'auto'; attachVideoSource(v); }
+      });
+    }, 2000);
   } else {
     // 老浏览器兜底：直接加载全部（rotor 视频由轮播器自行加载）
     [].slice.call(document.querySelectorAll('video[data-src]:not([data-rotor])')).forEach(function (v) {
@@ -410,13 +420,13 @@ document.documentElement.classList.add('js');
     gsap.set('.role--stack .wipe-mask', { scaleX: 1 });
     gsap.set('.role--stack video', { scale: 1.15 });
 
-    // 四张卡片分两组：每组两张先错开滑入（左-右），都到位后「锁定相对位置」同时整体上滑，
-    // 再进入下一组。实现「第二个出现后，第一个和第二个固定位置、一起跟着上滑」。
+    // 四张卡片分两组：每组两张先错开滑入（左-右），第二个一到位就「锁定相对位置」同时整体上滑，
+    // 且这一组上滑必须早于下一组出现——不能等第三张全现后才移第一二张。
     var tl = gsap.timeline({
       scrollTrigger: { trigger: sec, start: 'top top', end: 'bottom bottom', scrub: 0.7,
         invalidateOnRefresh: true }
     });
-    var gap = 0.9, step = 0.45, inDur = 0.8, groupGap = 1.4;
+    var gap = 0.85, step = 0.4, inDur = 0.7, outDur = 0.75, groupGap = 2.0;
     // 每组：g=0 → 卡片1/2；g=1 → 卡片3/4
     [0, 2].forEach(function (start, g) {
       var pair = [cards[start], cards[start + 1]].filter(Boolean);
@@ -425,13 +435,14 @@ document.documentElement.classList.add('js');
         var at = groupAt + j * step;
         // 滑入：从下方到目标位置
         tl.to(card, { yPercent: 0, opacity: 1, ease: 'power2.out', duration: inDur }, at);
-        tl.to(card.querySelector('video'), { scale: 1, ease: 'power2.out', duration: 0.7 }, at + 0.1);
-        tl.to(card.querySelector('.wipe-mask'), { scaleX: 0, ease: 'power3.inOut', duration: 0.7 }, at + 0.05);
+        tl.to(card.querySelector('video'), { scale: 1, ease: 'power2.out', duration: 0.65 }, at + 0.1);
+        tl.to(card.querySelector('.wipe-mask'), { scaleX: 0, ease: 'power3.inOut', duration: 0.65 }, at + 0.05);
       });
-      // 两张都到位后，作为一组同时上滑（保持各自 top/角度，只改 yPercent），不各自接力消失
-      var slideOutAt = groupAt + step + inDur + 0.35;
+      // 第二张滑入开始时刻(groupAt+step) + inDur = 第二张全现；紧接其后立刻整组上滑。
+      // 下一组在 groupAt+groupGap(=2.0) 才开始出现，晚于本组上滑起点，确保「第二个出来就移，不等第三个」。
+      var slideOutAt = groupAt + step + inDur + 0.05;
       pair.forEach(function (card) {
-        tl.to(card, { yPercent: -150, opacity: 0, ease: 'power2.in', duration: 0.9 }, slideOutAt);
+        tl.to(card, { yPercent: -150, opacity: 0, ease: 'power2.in', duration: outDur }, slideOutAt);
       });
     });
 

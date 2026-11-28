@@ -231,41 +231,43 @@ a:active{opacity:.7}
   text-align:center;padding:1rem;border:1px dashed var(--mint-hair)}
 
 /* 6 WORK EXPERIENCE — 参考 sophiaamoruso FOUNDERS 版式（淡蓝底 + 超大字 + 斜叠卡片） */
-.work-exp{position:relative;background:#e8eef6;color:#14161c;overflow:hidden;isolation:isolate;
-  padding:clamp(5rem,9vh,8rem) var(--pad) clamp(4rem,7vh,6rem)}
-.work-exp-inner{position:relative;z-index:1;max-width:var(--maxw);margin:0 auto}
-.fx-head{position:relative}
-/* 顶部小字：左「曾经」/「担任」居于整行左右正中（多留空行拉开距离） */
+/* 文字区 sticky 贴顶：滚到顶部后三行文字固定，继续下滑只滑动素材 */
+.work-exp{position:relative;background:#e8eef6;color:#14161c;isolation:isolate;height:200vh}
+.work-exp-stage{position:sticky;top:0;height:100svh;overflow:hidden;padding:calc(var(--nav-h) + 4vh) var(--pad) 4vh}
+.work-exp-inner{position:relative;z-index:1;max-width:var(--maxw);height:100%;margin:0 auto;
+  display:flex;flex-direction:column;justify-content:center}
+.fx-head{position:relative;z-index:6;flex:none}
+/* 顶部小字：左「曾经」/「担任」居于整行正中；与标题拉开明显行距 */
 .fx-kicker{position:relative;display:flex;align-items:baseline;font-family:var(--sans);
-  font-size:clamp(1rem,2vw,1.6rem);font-weight:700;letter-spacing:.06em;margin-bottom:.6rem}
+  font-size:clamp(1rem,2vw,1.6rem);font-weight:700;letter-spacing:.06em;margin-bottom:1.6rem}
 .fx-k-left{position:absolute;left:0}
 .fx-k-mid{position:absolute;left:50%;transform:translateX(-50%)}
 /* 超大主标题：「腾讯」置左、「产品经理」贴右，两端对齐撑满整行 */
 .fx-title{display:flex;justify-content:space-between;align-items:baseline;width:100%;
-  font-family:var(--sans);font-weight:800;white-space:nowrap;line-height:.86;
+  font-family:var(--sans);font-weight:800;white-space:nowrap;line-height:1.02;
   letter-spacing:-.03em;margin:0;color:#14161c;font-size:clamp(2.4rem,10vw,9rem)}
 .fx-t-left,.fx-t-headright{display:inline-block}
 /* 主标题下方：PCG营收小组靠右 */
-.fx-tail{display:flex;align-items:baseline;margin-top:.7rem}
+.fx-tail{display:flex;align-items:baseline;margin-top:1rem}
 .fx-t-right{font-family:var(--sans);font-size:clamp(1rem,2vw,1.6rem);font-weight:700;
   letter-spacing:.06em;margin-left:auto}
-/* 三张无白底素材：视频放大左上 / 工牌照右 / 第三张左下；下滑整体上移叠在文字上 */
-.fx-stack{position:relative;z-index:5;height:clamp(360px,50vw,680px);margin-top:-2vw}
+/* 三张无白底素材：视频放大左上 / 工牌照右 / 第三张左下；滚动时上移叠在文字上 */
+.fx-stack{position:relative;z-index:5;flex:1;min-height:0;margin-top:1rem}
 .fx-card{position:absolute;margin:0;box-sizing:border-box;will-change:transform,opacity;
   transform:rotate(var(--rot,0deg))}
 .fx-card img,.fx-card video{display:block;width:100%;height:100%;object-fit:cover;background:transparent}
-/* 视频左上、放大、横屏比例，压在大字上 */
-.fx-card--video{width:52%;left:0;top:2%;aspect-ratio:16/10;--rot:-6deg;z-index:3}
-/* 工牌照右侧、竖图 */
-.fx-card--badge{width:30%;right:1%;top:20%;aspect-ratio:4/5;--rot:7deg;z-index:4}
-/* 第三张照片左下、竖图 */
-.fx-card--photo{width:32%;left:8%;bottom:0;aspect-ratio:4/5;--rot:-5deg;z-index:2}
+/* 视频左上、放大、横屏比例 */
+.fx-card--video{width:48%;left:0;top:4%;aspect-ratio:16/10;--rot:-6deg;z-index:3}
+/* 工牌照右侧、竖图；原图人像侧躺，图片自身顺时针旋转 90° 使其正立 */
+.fx-card--badge{width:26%;right:2%;top:6%;aspect-ratio:4/5;--rot:7deg;z-index:4}
+.fx-card--badge img{transform:rotate(90deg) scale(1.25)}
+/* 第三张照片放中下方，水平避开视频（视频占左侧），不与视频重合 */
+.fx-card--photo{width:26%;left:36%;bottom:0;aspect-ratio:4/5;--rot:-5deg;z-index:2}
 .js .fx-card{opacity:0}
 @media(max-width:860px){
-  .fx-stack{height:clamp(340px,98vw,560px);margin-top:0}
-  .fx-card--video{width:74%;left:0;top:0;--rot:-5deg}
-  .fx-card--badge{width:46%;right:1%;top:42%;--rot:7deg}
-  .fx-card--photo{width:48%;left:2%;bottom:0;--rot:-5deg}
+  .fx-card--video{width:74%;left:0;top:2%;--rot:-5deg}
+  .fx-card--badge{width:42%;right:1%;top:44%;--rot:7deg}
+  .fx-card--photo{width:46%;left:2%;bottom:0;--rot:-5deg}
 }
 
 /* 7 WORKS / SHOWREEL */
