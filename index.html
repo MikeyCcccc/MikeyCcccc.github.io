@@ -74,7 +74,7 @@
     <div class="gcell gcell--gif gcell--tr">
       <div class="reel-rotor" data-rotor>
         <picture class="reel-item is-active"><source srcset="assets/moments/m07.webp" type="image/webp"><img src="assets/moments/m07.gif" alt="陈翰霖短剧片段" loading="lazy" decoding="async"></picture>
-        <video class="reel-item" data-src="assets/moments/reel-top.mp4" poster="assets/moments/reel-top-poster.webp" data-rotor muted playsinline preload="none"></video>
+        <video class="reel-item" data-src="assets/moments/reel-top.mp4" poster="assets/moments/reel-top-poster.webp" data-rotor muted playsinline preload="auto"></video>
       </div>
     </div>
     <div class="gcell gcell--title font-1" style="grid-column:1;grid-row:1">永不饶恕<span class="gcell-en">Never Forgive</span></div>
@@ -89,8 +89,8 @@
       </div>
       <!-- 竖屏：同一格轮播两个片段，任一时刻只显示一个并居中 -->
       <div class="reel-rotor" data-rotor>
-        <video class="reel-item is-active" data-src="assets/moments/reel-duo-a.mp4" poster="assets/moments/reel-duo-a-poster.webp" data-rotor muted playsinline preload="none"></video>
-        <video class="reel-item" data-src="assets/moments/reel-duo-c.mp4" poster="assets/moments/reel-duo-c-poster.webp" data-rotor muted playsinline preload="none"></video>
+        <video class="reel-item is-active" data-src="assets/moments/reel-duo-a.mp4" poster="assets/moments/reel-duo-a-poster.webp" data-rotor muted playsinline preload="auto"></video>
+        <video class="reel-item" data-src="assets/moments/reel-duo-c.mp4" poster="assets/moments/reel-duo-c-poster.webp" data-rotor muted playsinline preload="auto"></video>
       </div>
     </div>
     <div class="gcell gcell--title font-4" style="grid-column:3;grid-row:2">神医下山<span class="gcell-en">Divine Doctor Descends</span></div>
@@ -139,19 +139,11 @@
           <div class="theater-card"><img src="assets/theater/theater-03.webp" alt="《天堂岛之歌》小剧场演出剧照" width="1400" height="933"></div>
         </div>
       </div>
-      <!-- 签名：压在照片下缘的透明叠加字，尾部少量破页到下一页（回到上一版 Dancing Script） -->
+      <!-- 签名：粗笔刷体 + difference 反相，字覆盖处底图照片反相透出，尾部少量破页到下一页 -->
       <div class="theater-signature" aria-hidden="true">
-        <svg viewBox="0 0 760 180" role="presentation">
-          <defs>
-            <linearGradient id="sigGrad" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stop-color="#eaf1f7"/>
-              <stop offset="35%" stop-color="#ffffff"/>
-              <stop offset="70%" stop-color="#bfe3d8"/>
-              <stop offset="100%" stop-color="#f6f6f3"/>
-            </linearGradient>
-          </defs>
-          <!-- 镂空字：无填充，浅色描边，字内部完全透明，底图照片从笔画内透出；viewBox 加宽给 EN 右上角留余量 -->
-          <text x="50%" y="58%" text-anchor="middle" font-family="'Dancing Script','Great Vibes',cursive" font-size="112" font-weight="700" fill="none" stroke="url(#sigGrad)" stroke-width="6" stroke-linejoin="round" transform="rotate(-7 380 90)">MIKEY CHEN</text>
+        <svg viewBox="0 0 1100 230" role="presentation">
+          <!-- 白色实心粗笔刷字；容器用 mix-blend-mode:difference，使字覆盖处的照片反相 -->
+          <text x="50%" y="62%" text-anchor="middle" font-family="'Permanent Marker','Ma Shan Zheng',cursive" font-size="140" font-weight="700" fill="#ffffff" transform="rotate(-5 550 115)">MIKEY CHEN</text>
         </svg>
       </div>
     </div>
@@ -238,15 +230,15 @@
   <div class="wrap work-exp-inner">
     <!-- 大字版式：上方小字左「曾经 担任」/ 右「PCG营收小组」，中间大字 + & -->
     <div class="fx-head">
-      <div class="fx-kicker"><span class="fx-k-left">曾经</span><span class="fx-k-mid">担任</span><span class="fx-sub">另一种履历</span></div>
-      <h2 class="fx-title" data-fill>腾讯公司产品经理</h2>
-      <div class="fx-tail"><span class="fx-t-amp">&amp;</span><span class="fx-t-right">PCG营收小组</span></div>
+      <div class="fx-kicker"><span class="fx-k-left">曾经</span><span class="fx-k-mid">担任</span></div>
+      <h2 class="fx-title"><span class="fx-t-left">腾讯</span><span class="fx-t-headright">产品经理</span></h2>
+      <div class="fx-tail"><span class="fx-t-right">PCG营收小组</span></div>
     </div>
-    <!-- 三张斜叠滑入的内容：工牌照 / 腾讯T恤人像 / 视频 -->
+    <!-- 三张斜叠素材：视频放大放左上 / 工牌照右下 / 第三张照片左下；无白底，下滑整体上移叠在文字上 -->
     <div class="fx-stack" id="fxStack">
-      <figure class="fx-card" style="--i:0"><img src="assets/work-exp/tencent-2.webp" alt="腾讯工作证" loading="lazy" decoding="async"></figure>
-      <figure class="fx-card" style="--i:1"><img src="assets/work-exp/tencent-1.webp" alt="腾讯产品经理时期" loading="lazy" decoding="async"></figure>
-      <figure class="fx-card fx-card--video" style="--i:2"><video data-src="assets/work-exp/tencent-video.mp4" poster="assets/work-exp/tencent-video-poster.webp" muted loop playsinline preload="none"></video></figure>
+      <figure class="fx-card fx-card--video" style="--i:0"><video data-src="assets/work-exp/founders-video.mp4" poster="assets/work-exp/founders-video-poster.webp" muted loop playsinline preload="none"></video></figure>
+      <figure class="fx-card fx-card--badge" style="--i:1"><img src="assets/work-exp/tencent-2.webp" alt="腾讯工作证" loading="lazy" decoding="async"></figure>
+      <figure class="fx-card fx-card--photo" style="--i:2"><img src="assets/work-exp/tencent-1.webp" alt="腾讯产品经理时期" loading="lazy" decoding="async"></figure>
     </div>
   </div>
 </section>

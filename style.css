@@ -6,7 +6,7 @@
    waive: none
    answered: phone hidden (email only); follower count "全网粉丝 3000+" supplied by user
    ============================================================ */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@400;500;700&family=Inter:wght@400;500&family=Playfair+Display:ital,wght@0,700;1,700&family=Bebas+Neue&family=Pacifico&family=Great+Vibes&family=Anton&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Bodoni+Moda:ital,wght@0,700;1,700&family=Abril+Fatface&family=Dancing+Script&family=ZCOOL+XiaoWei&family=ZCOOL+QingKe+HuangYou&family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&family=Long+Cang&family=Liu+Jian+Mao+Cao&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@400;500;700&family=Inter:wght@400;500&family=Playfair+Display:ital,wght@0,700;1,700&family=Bebas+Neue&family=Pacifico&family=Great+Vibes&family=Anton&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Bodoni+Moda:ital,wght@0,700;1,700&family=Abril+Fatface&family=Dancing+Script&family=Permanent+Marker&family=ZCOOL+XiaoWei&family=ZCOOL+QingKe+HuangYou&family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&family=Long+Cang&family=Liu+Jian+Mao+Cao&display=swap');
 
 :root{
   --mint:#bfe3d8; --ice:#eaf1f7; --black:#1D1D1F; --paper:#f6f6f3; --white:#ffffff;
@@ -163,8 +163,8 @@ a:active{opacity:.7}
 /* 签名：原尺寸/透明叠加风格，回到 theater-visual（照片列）内压在照片下缘可见，
    尾部少量越界形成破页。theater z-index 保证破页部分盖在 works 之上 */
 /* 细长花体：用 top 锚定主体在照片下缘（约 visual 90%），SVG 加高让尾部下垂破到 works 页 */
-.theater-signature{position:absolute;left:50%;top:88%;bottom:auto;width:min(100%,680px);transform:translateX(-50%);
-  z-index:20;pointer-events:none;opacity:.5;mix-blend-mode:screen}
+.theater-signature{position:absolute;left:50%;top:88%;bottom:auto;width:min(100%,720px);transform:translateX(-50%);
+  z-index:20;pointer-events:none;mix-blend-mode:difference}
 .theater-signature svg{width:100%;height:auto;display:block}
 @media(prefers-reduced-motion:reduce){.theater-mark svg{animation:none}}
 /* 桌面端剧场页：参考 Sophia $350M 版式，左侧字号整体加大、右侧照片+签名放大、两列贴近 */
@@ -235,39 +235,37 @@ a:active{opacity:.7}
   padding:clamp(5rem,9vh,8rem) var(--pad) clamp(4rem,7vh,6rem)}
 .work-exp-inner{position:relative;z-index:1;max-width:var(--maxw);margin:0 auto}
 .fx-head{position:relative}
-/* 顶部小字：左「曾经」/ 中「担任」/ 角落「另一种履历」 */
-.fx-kicker{display:flex;align-items:baseline;gap:2.4rem;font-family:var(--sans);
-  font-size:clamp(1rem,2vw,1.6rem);font-weight:700;letter-spacing:.06em;margin-bottom:.4rem}
-.fx-sub{margin-left:auto;font-family:var(--serif);font-size:clamp(.85rem,1.4vw,1.05rem);
-  font-weight:400;letter-spacing:.08em;color:#5b6573}
-/* 超大主标题：data-fill 由 JS 精确撑满一行宽度（inline-block 才能测到真实文字宽） */
-.fx-title{display:inline-block;font-family:var(--sans);font-weight:800;white-space:nowrap;line-height:.86;
-  letter-spacing:-.03em;margin:0;color:#14161c;font-size:clamp(2.4rem,11vw,10rem)}
-/* 主标题下方：& 靠左中、PCG营收小组靠右 */
-.fx-tail{display:flex;align-items:baseline;gap:2.4rem;margin-top:.7rem}
-.fx-t-amp{font-family:var(--sans);font-size:clamp(2rem,4.5vw,4rem);font-weight:700;
-  line-height:1;margin-left:8%}
+/* 顶部小字：左「曾经」/「担任」居于整行左右正中（多留空行拉开距离） */
+.fx-kicker{position:relative;display:flex;align-items:baseline;font-family:var(--sans);
+  font-size:clamp(1rem,2vw,1.6rem);font-weight:700;letter-spacing:.06em;margin-bottom:.6rem}
+.fx-k-left{position:absolute;left:0}
+.fx-k-mid{position:absolute;left:50%;transform:translateX(-50%)}
+/* 超大主标题：「腾讯」置左、「产品经理」贴右，两端对齐撑满整行 */
+.fx-title{display:flex;justify-content:space-between;align-items:baseline;width:100%;
+  font-family:var(--sans);font-weight:800;white-space:nowrap;line-height:.86;
+  letter-spacing:-.03em;margin:0;color:#14161c;font-size:clamp(2.4rem,10vw,9rem)}
+.fx-t-left,.fx-t-headright{display:inline-block}
+/* 主标题下方：PCG营收小组靠右 */
+.fx-tail{display:flex;align-items:baseline;margin-top:.7rem}
 .fx-t-right{font-family:var(--sans);font-size:clamp(1rem,2vw,1.6rem);font-weight:700;
   letter-spacing:.06em;margin-left:auto}
-/* 三张斜叠卡片：叠压在大字上，滚动时逐张从下方滑入 */
-.fx-stack{position:relative;height:clamp(340px,46vw,620px);margin-top:-1.5vw}
-.fx-card{position:absolute;margin:0;padding:.5rem;background:#fff;box-sizing:border-box;
-  aspect-ratio:4/5;box-shadow:0 24px 60px rgba(20,30,50,.28);will-change:transform,opacity;
+/* 三张无白底素材：视频放大左上 / 工牌照右 / 第三张左下；下滑整体上移叠在文字上 */
+.fx-stack{position:relative;z-index:5;height:clamp(360px,50vw,680px);margin-top:-2vw}
+.fx-card{position:absolute;margin:0;box-sizing:border-box;will-change:transform,opacity;
   transform:rotate(var(--rot,0deg))}
-.fx-card--video{aspect-ratio:16/10}
-.fx-card img,.fx-card video{display:block;width:100%;height:100%;object-fit:cover;background:#dbe3ee}
-.fx-card:nth-child(1){width:34%;left:2%;top:4%;--rot:-7deg;z-index:3}
-.fx-card:nth-child(2){width:29%;left:37%;top:16%;--rot:4deg;z-index:4}
-.fx-card:nth-child(3){width:31%;right:3%;top:6%;--rot:-5deg;z-index:2}
+.fx-card img,.fx-card video{display:block;width:100%;height:100%;object-fit:cover;background:transparent}
+/* 视频左上、放大、横屏比例，压在大字上 */
+.fx-card--video{width:52%;left:0;top:2%;aspect-ratio:16/10;--rot:-6deg;z-index:3}
+/* 工牌照右侧、竖图 */
+.fx-card--badge{width:30%;right:1%;top:20%;aspect-ratio:4/5;--rot:7deg;z-index:4}
+/* 第三张照片左下、竖图 */
+.fx-card--photo{width:32%;left:8%;bottom:0;aspect-ratio:4/5;--rot:-5deg;z-index:2}
 .js .fx-card{opacity:0}
 @media(max-width:860px){
-  .fx-kicker{gap:1rem}
-  .fx-tail{gap:1rem}
-  .fx-t-amp{margin-left:14%}
-  .fx-stack{height:clamp(310px,82vw,470px);margin-top:0}
-  .fx-card:nth-child(1){width:46%;left:1%;top:2%;--rot:-7deg}
-  .fx-card:nth-child(2){width:44%;right:1%;left:auto;top:26%;--rot:6deg}
-  .fx-card:nth-child(3){width:48%;left:22%;right:auto;top:52%;--rot:-4deg}
+  .fx-stack{height:clamp(340px,98vw,560px);margin-top:0}
+  .fx-card--video{width:74%;left:0;top:0;--rot:-5deg}
+  .fx-card--badge{width:46%;right:1%;top:42%;--rot:7deg}
+  .fx-card--photo{width:48%;left:2%;bottom:0;--rot:-5deg}
 }
 
 /* 7 WORKS / SHOWREEL */

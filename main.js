@@ -12,16 +12,19 @@ document.documentElement.classList.add('js');
     autoplay: { delay: 2200 }
   });
 
-  // work experience — FOUNDERS 版式：三张斜叠卡片随滚动错开滑入并轻微回正
+  // work experience — FOUNDERS 版式：三张素材随滚动整体上移，叠压到大字上
   (function () {
     var fxCards = gsap.utils.toArray('.fx-card');
-    if (!fxCards.length) return;
-    var rotOf = function (i, el) { return parseFloat(getComputedStyle(el).getPropertyValue('--rot')) || 0; };
-    if (reduceMotion) { gsap.set(fxCards, { opacity: 1 }); return; }
+    var fxSec = document.querySelector('.work-exp');
+    if (!fxCards.length || !fxSec) return;
+    if (reduceMotion) { gsap.set(fxCards, { opacity: 1, y: 0 }); return; }
+    // scrub 绑定整个 section：从素材下缘刚入视口到 section 走完，
+    // 三张卡片由下方升起到文字区并继续上移，形成「下滑时照片往上叠在文字上」
     gsap.fromTo(fxCards,
-      { y: 130, opacity: 0, rotation: function (i, el) { return rotOf(i, el) + (i % 2 ? 9 : -9); } },
-      { y: 0, opacity: 1, rotation: rotOf, duration: 0.95, stagger: 0.18, ease: 'power3.out',
-        scrollTrigger: { trigger: '.fx-stack', start: 'top 82%', toggleActions: 'play none none none' } }
+      { y: function () { return window.innerHeight * 0.45; }, opacity: 0 },
+      { y: -window.innerHeight * 0.12, opacity: 1, ease: 'none', stagger: 0.06,
+        scrollTrigger: { trigger: fxSec, start: 'top 78%', end: 'bottom 55%', scrub: 0.7,
+          invalidateOnRefresh: true } }
     );
   })();
 
@@ -210,9 +213,28 @@ document.documentElement.classList.add('js');
           item.addEventListener('loadeddata', kick, { once: true });
           item.addEventListener('canplay', kick, { once: true });
         }
-        armTimer(9000); // 视频卡住时的兜底切换
+        // 兜底：境外源站首帧可能要数秒，视频尚未就绪时不能切换（否则刚切到就切走，永远播不到）。
+        // 只在数据到达(readyState>=2)后才启动 9s 防卡计时；未就绪则 2s 复查一次，最长等 20s。
+        var waitForData = 0;
+        (function armFallback() {
+          clearTimeout(timer);
+          if (item.readyState >= 2) { armTimer(9000); return; }
+          waitForData += 2000;
+          if (waitForData > 20000) { if (running) next(); return; }
+          timer = setTimeout(function () { if (running && !item.classList.contains('is-active')) return; armFallback(); }, 2000);
+        })();
       } else {
-        armTimer(gifHold); // GIF 片段定时切换（右上短 GIF 播一次即切）
+        // GIF 片段定时切换；但下一段是视频时，若它尚未缓冲好就顺延，避免切到黑帧/空帧
+        var nextItem = items[(idx + 1) % items.length];
+        var goNext = function () {
+          if (!running) return;
+          if (nextItem.tagName === 'VIDEO' && nextItem.readyState < 2) {
+            timer = setTimeout(goNext, 400); // 视频还没首帧，等它（最长由外层兜底接管）
+            return;
+          }
+          next();
+        };
+        timer = setTimeout(goNext, gifHold);
       }
     }
     function next() {
@@ -272,7 +294,8 @@ document.documentElement.classList.add('js');
   var visual = document.querySelector('.theater-visual');
   if (strip && visual) {
     gsap.fromTo(strip,
-      { y: function () { return visual.clientHeight * 0.95; } },
+      // 起点：第一张照片顶部正好落在容器最底边（100%），完全贴底不外露，下滑才升起
+      { y: function () { return visual.clientHeight * 1.0; } },
       // 终点：最后一张照片底边停在签名所在高度（visual 88%）附近，确保签名始终压在照片上、下方不留空条
       { y: function () { return -(strip.scrollHeight - visual.clientHeight) - visual.clientHeight * 0.03; },
         ease: 'none',
@@ -387,21 +410,29 @@ document.documentElement.classList.add('js');
     gsap.set('.role--stack .wipe-mask', { scaleX: 1 });
     gsap.set('.role--stack video', { scale: 1.15 });
 
-    // 四张卡片：每张 0.8 段滑入 → 停留 → 0.8 段向上滑出；彼此错开 0.45（约半程），
-    // 形成「前一个全现时后一个刚半现」的左-右-左-右接力
+    // 四张卡片分两组：每组两张先错开滑入（左-右），都到位后「锁定相对位置」同时整体上滑，
+    // 再进入下一组。实现「第二个出现后，第一个和第二个固定位置、一起跟着上滑」。
     var tl = gsap.timeline({
       scrollTrigger: { trigger: sec, start: 'top top', end: 'bottom bottom', scrub: 0.7,
         invalidateOnRefresh: true }
     });
-    var gap = 1.0, step = 0.45, inDur = 0.8;
-    cards.forEach(function (card, i) {
-      var at = gap + i * step;
-      // 滑入：从下方到目标位置
-      tl.to(card, { yPercent: 0, opacity: 1, ease: 'power2.out', duration: inDur }, at);
-      tl.to(card.querySelector('video'), { scale: 1, ease: 'power2.out', duration: 0.7 }, at + 0.1);
-      tl.to(card.querySelector('.wipe-mask'), { scaleX: 0, ease: 'power3.inOut', duration: 0.7 }, at + 0.05);
-      // 继续下滑：向上滑出页面（yPercent 变负 + 淡出），停 1.2 段后滑出
-      tl.to(card, { yPercent: -140, opacity: 0, ease: 'power2.in', duration: 0.8 }, at + 1.2);
+    var gap = 0.9, step = 0.45, inDur = 0.8, groupGap = 1.4;
+    // 每组：g=0 → 卡片1/2；g=1 → 卡片3/4
+    [0, 2].forEach(function (start, g) {
+      var pair = [cards[start], cards[start + 1]].filter(Boolean);
+      var groupAt = gap + g * groupGap;
+      pair.forEach(function (card, j) {
+        var at = groupAt + j * step;
+        // 滑入：从下方到目标位置
+        tl.to(card, { yPercent: 0, opacity: 1, ease: 'power2.out', duration: inDur }, at);
+        tl.to(card.querySelector('video'), { scale: 1, ease: 'power2.out', duration: 0.7 }, at + 0.1);
+        tl.to(card.querySelector('.wipe-mask'), { scaleX: 0, ease: 'power3.inOut', duration: 0.7 }, at + 0.05);
+      });
+      // 两张都到位后，作为一组同时上滑（保持各自 top/角度，只改 yPercent），不各自接力消失
+      var slideOutAt = groupAt + step + inDur + 0.35;
+      pair.forEach(function (card) {
+        tl.to(card, { yPercent: -150, opacity: 0, ease: 'power2.in', duration: 0.9 }, slideOutAt);
+      });
     });
 
     // 标题：必须与卡片共用同一条 timeline（同时间基准）。
