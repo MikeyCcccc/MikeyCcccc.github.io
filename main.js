@@ -364,19 +364,52 @@ document.documentElement.classList.add('js');
     footer.style.setProperty('--fpor-bottom', Math.max(0, dist).toFixed(2) + 'px');
   }
 
+  // 剧场数字对齐：让"观众人数 / 300,000+"各自左边缘贴"剧"左、右边缘贴"场"右。
+  // 两行字数不同，各自独立按目标宽度反算字号（等比缩放字高，不变形）。
+  function alignTheaterBig() {
+    var copy = document.querySelector('.theater-copy');
+    var spans = document.querySelectorAll('.theater-top span');
+    var mid = document.querySelector('.theater-mid');
+    if (!copy || !mid || spans.length < 4) return;
+    // 仅桌面端对齐；手机端（竖屏/横屏）四字紧凑，强行对齐会把数字压到 ~13px，用户要求保持原样
+    if (window.innerWidth <= 860) {
+      mid.style.removeProperty('margin-left');
+      mid.style.removeProperty('width');
+      [].slice.call(mid.querySelectorAll('.theater-big')).forEach(function (el) { el.style.removeProperty('font-size'); });
+      return;
+    }
+    var ju = spans[2].getBoundingClientRect();   // 剧
+    var chang = spans[3].getBoundingClientRect(); // 场
+    var copyL = copy.getBoundingClientRect().left;
+    var targetL = ju.left - copyL;
+    var targetW = chang.right - ju.left;
+    if (targetW <= 0) return;
+    mid.style.marginLeft = targetL.toFixed(2) + 'px';
+    mid.style.width = targetW.toFixed(2) + 'px';
+    [].slice.call(mid.querySelectorAll('.theater-big')).forEach(function (el) {
+      el.style.fontSize = '';
+      var base = parseFloat(getComputedStyle(el).fontSize); // CSS clamp 基准
+      var natural = el.scrollWidth;
+      if (natural > 0) el.style.fontSize = (base * targetW / natural).toFixed(2) + 'px';
+    });
+  }
+
   var refreshRaf = null;
   function refreshAll() {
     fitText();
+    alignTheaterBig();
     if (refreshRaf) cancelAnimationFrame(refreshRaf);
     // 双 rAF：等样式重排 + 绘制完成后再测量，坐标最稳
     refreshRaf = requestAnimationFrame(function () {
       requestAnimationFrame(function () {
         syncFooterPortraitBottom();
+        alignTheaterBig();
         if (window.ScrollTrigger) ScrollTrigger.refresh();
       });
     });
   }
   fitText();
+  alignTheaterBig();
   window.addEventListener('load', refreshAll);
   // 字体就绪后 refresh（字体加载会改变 h1/font-size 与测量盒）
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(refreshAll);

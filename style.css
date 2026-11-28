@@ -120,9 +120,11 @@ a:active{opacity:.7}
 /* SECTION SHELL */
 .wrap{max-width:var(--maxw);margin:0 auto;padding:7rem var(--pad)}
 .wrap.tight{padding-top:4rem;padding-bottom:4rem}
-.eyebrow{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 2rem}
+.eyebrow{font-family:var(--serif);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 2rem}
 .sec-title{font-family:var(--serif);font-weight:700;font-size:clamp(2.5rem,7vw,5.5rem);
   line-height:1.05;margin:0 0 2rem;overflow-wrap:break-word;min-width:0;text-wrap:balance}
+/* 字体区分（用户要求）：以下五个区块标题=黑体、其下其他文字=宋体 */
+.works .sec-title,.dance .sec-title,.work-exp .sec-title{font-family:var(--sans)}
 .lead{font-size:1.05rem;line-height:1.75;max-width:36rem;color:var(--ink-soft)}
 .star{width:2.2rem;height:2.2rem;animation:spin 6s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -136,9 +138,11 @@ a:active{opacity:.7}
 .theater-copy{display:flex;flex-direction:column;justify-content:center;min-width:0}
 .theater-top{display:flex;justify-content:space-between;max-width:34rem;
   font-size:1.25rem;letter-spacing:.28em;font-weight:700;text-transform:uppercase}
-.theater-mid{margin:2.8rem 0}
+/* 观众人数 / 300,000+：宽度与左偏移由 JS 对齐到"剧"左~"场"右（见 main.js alignTheaterBig） */
+.theater-mid{margin:2.8rem 0;position:relative}
 .theater-big{font-family:var(--sans);font-weight:700;line-height:.9;
-  font-size:clamp(3.8rem,11.8vw,11rem);letter-spacing:-.055em;white-space:nowrap;color:var(--black)}
+  font-size:clamp(3.8rem,11.8vw,11rem);letter-spacing:-.055em;white-space:nowrap;color:var(--black);
+  transform-origin:left center}
 .theater-big+.theater-big{margin-top:.02em}
 .theater-bottom{overflow:hidden;white-space:nowrap;width:100%;max-width:34rem;
   font-size:1.25rem;letter-spacing:.06em;font-weight:700}
@@ -154,24 +158,25 @@ a:active{opacity:.7}
   z-index:4;color:var(--ink);pointer-events:none;opacity:.9}
 .theater-mark svg{width:100%;height:auto;display:block;animation:mark-float 6s ease-in-out infinite}
 @keyframes mark-float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(2deg)}}
-.theater-signature{position:absolute;left:50%;bottom:6%;width:min(84%,680px);transform:translateX(-50%);
-  z-index:5;pointer-events:none;opacity:.82;mix-blend-mode:screen}
+/* 签名放大并下移到 theater 底部外，跨越交界延伸到 works 顶部；z-index 高于 works 保证可见 */
+.theater-signature{position:absolute;left:50%;bottom:-13vh;width:min(96%,1080px);transform:translateX(-50%);
+  z-index:20;pointer-events:none;opacity:.9}
 .theater-signature svg{width:100%;height:auto;display:block}
 @media(prefers-reduced-motion:reduce){.theater-mark svg{animation:none}}
 
 /* 4 EDU */
 .edu{background:var(--black);color:var(--white);overflow:hidden;padding:8rem var(--pad) 4rem}
 .edu-inner{max-width:var(--maxw);margin:0 auto}
-.edu-kicker{font-family:var(--sans);font-size:clamp(.8rem,1.6vw,1.1rem);letter-spacing:.55em;margin:0 0 1.2rem;color:var(--white)}
+.edu-kicker{font-family:var(--serif);font-size:clamp(.8rem,1.6vw,1.1rem);letter-spacing:.55em;margin:0 0 1.2rem;color:var(--white)}
 .edu-headline{font-family:var(--sans);font-weight:700;font-size:clamp(2.6rem,8vw,7rem);line-height:1;margin:0;
   display:flex;align-items:center;gap:.35em;white-space:nowrap}
 .edu-star{width:.42em;height:.42em;flex:none;color:var(--white)}
-.edu-awards{font-family:var(--sans);font-weight:700;color:var(--white);
+.edu-awards{font-family:var(--serif);font-weight:700;color:var(--white);
   font-size:clamp(1rem,2vw,1.5rem);line-height:1.5;letter-spacing:.04em;margin:.9rem 0 0}
 .edu-stage{position:relative;min-height:105vh;display:grid;
   grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) minmax(0,1fr);
   align-items:center;gap:2rem;margin-top:3rem}
-.edu-repeat{display:flex;flex-direction:column;gap:.35rem;font-family:var(--sans);font-weight:700;
+.edu-repeat{display:flex;flex-direction:column;gap:.35rem;font-family:var(--serif);font-weight:700;
   font-size:clamp(1.7rem,4vw,3.6rem);line-height:.95;letter-spacing:-.02em;opacity:.92}
 .edu-repeat--right{text-align:right;transform:translateY(6.8rem)}
 .edu-photo{position:relative;width:min(100%,520px);justify-self:center;transform:rotate(-6deg);
@@ -199,7 +204,7 @@ a:active{opacity:.7}
   letter-spacing:.14em}
 /* 覆盖 wrap 的大 padding，让环绕文字贴近模块上下边缘（约两行空间） */
 .dance-inner{position:relative;z-index:1;padding-top:2.4rem;padding-bottom:2.4rem}
-.dance-sub{font-family:var(--sans);font-size:clamp(.85rem,1.5vw,1.05rem);letter-spacing:.06em;
+.dance-sub{font-family:var(--serif);font-size:clamp(.85rem,1.5vw,1.05rem);letter-spacing:.06em;
   color:var(--white);margin:.6rem 0 0;line-height:1.5}
 .dance-sub+.dance-sub{margin-top:.15rem}
 /* 手机端环绕文字滚动条（桌面隐藏） */
@@ -228,19 +233,19 @@ a:active{opacity:.7}
 .work-exp .sec-title{color:var(--white)}
 .work-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2rem;margin-top:2rem}
 .work-item{border-top:2px solid var(--ink);padding-top:1.2rem}
-.work-item .yr{font-size:.72rem;color:var(--muted);letter-spacing:.06em}
+.work-item .yr{font-family:var(--serif);font-size:.72rem;color:var(--muted);letter-spacing:.06em}
 .work-item h3{font-family:var(--serif);font-size:1.6rem;margin:.5rem 0 .4rem}
-.work-item p{font-size:.9rem;line-height:1.7;margin:0}
+.work-item p{font-family:var(--serif);font-size:.9rem;line-height:1.7;margin:0}
 .work-exp .work-item{border-top-color:var(--hair-55);color:var(--white)}
 .work-exp .work-item .yr{color:var(--mint)}
 .work-exp .work-item p{color:var(--paper-90)}
 
 /* 7 WORKS / SHOWREEL */
 .works{background:var(--iceblue)}
-.works-sub{font-family:var(--sans);font-weight:700;color:var(--ink);font-size:clamp(1.1rem,2vw,1.5rem);
+.works-sub{font-family:var(--serif);font-weight:700;color:var(--ink);font-size:clamp(1.1rem,2vw,1.5rem);
   letter-spacing:.04em;margin:-1.2rem 0 2rem}
 /* 视频标题：黑色、字号小于 24px */
-.video-cap{font-family:var(--sans);font-weight:700;color:var(--black);font-size:1.05rem;
+.video-cap{font-family:var(--serif);font-weight:700;color:var(--black);font-size:1.05rem;
   letter-spacing:.03em;line-height:1.3;margin:0 0 .7rem}
 .video-cap--hero{margin:0 0 .25rem}
 .showreel{width:100%;aspect-ratio:16/9;background:var(--black);margin:0 0 3rem}
@@ -269,13 +274,11 @@ a:active{opacity:.7}
 /* 最右列的右边框 + 最下行的下边框让位给开口外框线 */
 .gcell--tr,.font-6{border-right:0}
 .gcell--bl,.font-5,.font-6{border-bottom:0}
-.gcell--title{font-size:clamp(1.1rem,2vw,2rem);padding:.6rem}
-.font-1{font-family:var(--f-brush);font-size:clamp(2rem,3.6vw,3.6rem);line-height:1.05}
-.font-2{font-family:var(--f-poster);font-size:clamp(1.8rem,3.2vw,3.2rem);letter-spacing:.02em;line-height:.95}
-.font-3{font-family:var(--f-xiaowei);font-weight:700;font-size:clamp(1.4rem,2.5vw,2.5rem);letter-spacing:.04em}
-.font-4{font-family:var(--f-kuaile);font-size:clamp(1.3rem,2.4vw,2.4rem);line-height:1.1}
-.font-5{font-family:var(--f-cursive);font-size:clamp(1.9rem,3.4vw,3.4rem);line-height:1}
-.font-6{font-family:var(--f-bodoni);font-style:italic;font-weight:700;font-size:clamp(1.5rem,2.8vw,2.8rem);line-height:1}
+/* 杂志墙剧名：字体/字号统一为黑体（用户明确要求，不再用之前的艺术字体混排） */
+.gcell--title,.gcell--title.font-1,.gcell--title.font-2,.gcell--title.font-3,
+.gcell--title.font-4,.gcell--title.font-5,.gcell--title.font-6{
+  font-family:var(--sans);font-weight:600;font-size:clamp(1.1rem,1.8vw,1.8rem);
+  letter-spacing:.01em;line-height:1.15;font-style:normal}
 .gcell--gif{padding:0;background:var(--sand);position:relative}
 .gcell--tr{grid-column:4;grid-row:1/3}
 .gcell--bl{grid-column:1/3;grid-row:2/4}
@@ -310,8 +313,8 @@ a:active{opacity:.7}
   background:linear-gradient(90deg,var(--black) 0%,var(--scrim-85) 12%,var(--scrim-25) 45%,var(--scrim-0) 72%),
              linear-gradient(0deg,var(--black) 0%,var(--scrim-0) 28%)}
 .footer-inner{position:relative;z-index:1;max-width:var(--maxw);margin:0 auto}
-.footer h2{font-family:var(--serif);font-size:clamp(2.5rem,8vw,6rem);margin:0 0 2rem;line-height:1}
-.footer a.mail{font-size:1.1rem;border-bottom:1px solid var(--mint);padding-bottom:.3rem}
+.footer h2{font-family:var(--sans);font-size:clamp(2.5rem,8vw,6rem);margin:0 0 2rem;line-height:1}
+.footer a.mail{font-family:var(--serif);font-size:1.1rem;border-bottom:1px solid var(--mint);padding-bottom:.3rem}
 /* 合作与播出 + 二维码并排，底边对齐 */
 .footer-collab-row{display:flex;align-items:flex-end;justify-content:space-between;gap:2.5rem;flex-wrap:wrap;margin-top:2.5rem}
 .footer-partners{margin-top:0;flex:1 1 360px;max-width:560px}
@@ -327,15 +330,15 @@ a:active{opacity:.7}
 .footer-partners .partners div:nth-child(6) img{max-height:38px}
 /* 二维码靠右 */
 .footer-meta{display:flex;align-items:flex-end;justify-content:flex-end;gap:2rem;flex-wrap:wrap}
-.footer-stats{font-size:.7rem;color:var(--muted-2);padding:0;font-variant-numeric:tabular-nums}
+.footer-stats{font-family:var(--serif);font-size:.7rem;color:var(--muted-2);padding:0;font-variant-numeric:tabular-nums}
 /* 右下角三个白底二维码方框（缩小 + 圆角） */
 .qr-panel{display:flex;gap:.7rem;justify-content:flex-end;position:relative;z-index:2}
 .qr-box{background:var(--qr-paper);padding:.5rem .5rem .45rem;border-radius:12px;text-align:center;width:96px;
   box-shadow:0 8px 24px var(--scrim-30)}
 .qr-box img{width:100%;aspect-ratio:1/1;object-fit:contain;display:block;margin:0 auto}
-.qr-box span{display:block;color:var(--ink-deep);font-size:.72rem;font-weight:700;margin-top:.35rem;letter-spacing:.06em}
+.qr-box span{display:block;color:var(--ink-deep);font-family:var(--serif);font-size:.72rem;font-weight:700;margin-top:.35rem;letter-spacing:.06em}
 .footer-bottom{position:relative;z-index:2;background:var(--black);
-  margin-top:4rem;padding-top:1.5rem;border-top:1px solid var(--ink-soft);font-size:.7rem;color:var(--muted-3);
+  margin-top:4rem;padding-top:1.5rem;border-top:1px solid var(--ink-soft);font-family:var(--serif);font-size:.7rem;color:var(--muted-3);
   display:flex;align-items:center;flex-wrap:wrap;gap:1.5rem}
 .footer-bottom>span:last-child{margin-left:auto}
 
