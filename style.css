@@ -167,6 +167,15 @@ a:active{opacity:.7}
   z-index:20;pointer-events:none;opacity:.85;mix-blend-mode:screen}
 .theater-signature svg{width:100%;height:auto;display:block}
 @media(prefers-reduced-motion:reduce){.theater-mark svg{animation:none}}
+/* 桌面端剧场页：参考 Sophia $350M 版式，左侧字号整体加大、右侧照片+签名放大、两列贴近 */
+@media(min-width:861px){
+  .theater-grid{grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:clamp(1rem,2vw,2rem)}
+  .theater-top{font-size:clamp(1.5rem,2vw,1.9rem);max-width:42rem}
+  .theater-bottom{font-size:clamp(1.4rem,1.9vw,1.8rem);max-width:42rem}
+  .theater-mid{margin:2.2rem 0}
+  /* 签名略宽于照片列，加强破页压叠感（仍以照片列中心对齐） */
+  .theater-signature{width:min(118%,820px)}
+}
 
 /* 4 EDU */
 .edu{background:var(--black);color:var(--white);overflow:hidden;padding:8rem var(--pad) 4rem}
