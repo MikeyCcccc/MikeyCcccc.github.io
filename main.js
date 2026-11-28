@@ -412,13 +412,13 @@ document.documentElement.classList.add('js');
       return;
     }
 
-    // 每张卡片初始：藏在其目标位置下方，带自身旋转角
+    // 每张卡片初始：藏在其目标位置下方，带自身旋转角（无擦入遮罩、无缩放，整体出现）
     cards.forEach(function (card) {
       var rot = getComputedStyle(card).getPropertyValue('--rot').trim() || '0deg';
       gsap.set(card, { rotation: rot, yPercent: 135, opacity: 0, transformOrigin: 'center center' });
     });
-    gsap.set('.role--stack .wipe-mask', { scaleX: 1 });
-    gsap.set('.role--stack video', { scale: 1.15 });
+    gsap.set('.role--stack .wipe-mask', { scaleX: 0 });  // 遮罩常开（不遮挡），直接整卡出现
+    gsap.set('.role--stack video', { scale: 1 });
 
     // 四张卡片分两组：每组两张先错开滑入（左-右），第二个一到位就「锁定相对位置」同时整体上滑，
     // 且这一组上滑必须早于下一组出现——不能等第三张全现后才移第一二张。
@@ -426,17 +426,15 @@ document.documentElement.classList.add('js');
       scrollTrigger: { trigger: sec, start: 'top top', end: 'bottom bottom', scrub: 0.7,
         invalidateOnRefresh: true }
     });
-    var gap = 0.85, step = 0.4, inDur = 0.7, outDur = 0.75, groupGap = 2.0;
+    var gap = 0.85, step = 0.4, inDur = 0.7, outDur = 0.75, groupGap = 1.35;
     // 每组：g=0 → 卡片1/2；g=1 → 卡片3/4
     [0, 2].forEach(function (start, g) {
       var pair = [cards[start], cards[start + 1]].filter(Boolean);
       var groupAt = gap + g * groupGap;
       pair.forEach(function (card, j) {
         var at = groupAt + j * step;
-        // 滑入：从下方到目标位置
+        // 整体出现：从下方滑入到目标位置，无擦入遮罩、无缩放
         tl.to(card, { yPercent: 0, opacity: 1, ease: 'power2.out', duration: inDur }, at);
-        tl.to(card.querySelector('video'), { scale: 1, ease: 'power2.out', duration: 0.65 }, at + 0.1);
-        tl.to(card.querySelector('.wipe-mask'), { scaleX: 0, ease: 'power3.inOut', duration: 0.65 }, at + 0.05);
       });
       // 第二张滑入开始时刻(groupAt+step) + inDur = 第二张全现；紧接其后立刻整组上滑。
       // 下一组在 groupAt+groupGap(=2.0) 才开始出现，晚于本组上滑起点，确保「第二个出来就移，不等第三个」。

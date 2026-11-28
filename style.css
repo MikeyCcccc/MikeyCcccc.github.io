@@ -166,6 +166,10 @@ a:active{opacity:.7}
 .theater-signature{position:absolute;left:50%;top:95%;bottom:auto;width:min(100%,720px);transform:translateX(-50%);
   z-index:20;pointer-events:none;mix-blend-mode:difference}
 .theater-signature svg{width:100%;height:auto;display:block}
+/* 手机端：签名上移到照片下缘内侧（避免主体掉出容器），并放大让粗笔刷字清晰 */
+@media(max-width:860px){
+  .theater-signature{top:84%;width:min(112%,420px)}
+}
 @media(prefers-reduced-motion:reduce){.theater-mark svg{animation:none}}
 /* 桌面端剧场页：参考 Sophia $350M 版式，左侧字号整体加大、右侧照片+签名放大、两列贴近 */
 @media(min-width:861px){
@@ -236,7 +240,7 @@ a:active{opacity:.7}
 .work-exp-stage{position:sticky;top:0;height:100svh;overflow:hidden;padding:calc(var(--nav-h) + 4vh) var(--pad) 4vh}
 .work-exp-inner{position:relative;z-index:1;max-width:var(--maxw);height:100%;margin:0 auto;
   display:flex;flex-direction:column;justify-content:center}
-.fx-head{position:relative;z-index:6;flex:none}
+.fx-head{position:relative;z-index:5;flex:none}
 /* 顶部小字：左「曾经」/「担任」居于整行正中；与标题拉开明显行距 */
 .fx-kicker{position:relative;display:flex;align-items:baseline;font-family:var(--sans);
   font-size:clamp(1rem,2vw,1.6rem);font-weight:700;letter-spacing:.06em;margin-bottom:1.6rem}
@@ -252,21 +256,22 @@ a:active{opacity:.7}
 .fx-t-right{font-family:var(--sans);font-size:clamp(1rem,2vw,1.6rem);font-weight:700;
   letter-spacing:.06em;margin-left:auto}
 /* 三张无白底素材：视频放大左上 / 工牌照右 / 第三张左下；滚动时上移叠在文字上 */
-.fx-stack{position:relative;z-index:5;flex:1;min-height:0;margin-top:1rem}
+.fx-stack{position:relative;z-index:6;flex:1;min-height:0;margin-top:1rem}
 .fx-card{position:absolute;margin:0;box-sizing:border-box;will-change:transform,opacity;
   transform:rotate(var(--rot,0deg))}
 .fx-card img,.fx-card video{display:block;width:100%;height:100%;object-fit:cover;background:transparent}
-/* 视频左上、放大、横屏比例 */
-.fx-card--video{width:48%;left:0;top:4%;aspect-ratio:16/10;--rot:-6deg;z-index:3}
-/* 工牌照右侧、竖图；原图人像侧躺，图片自身顺时针旋转 90° 使其正立 */
-.fx-card--badge{width:26%;right:2%;top:6%;aspect-ratio:4/5;--rot:7deg;z-index:4}
+/* 三张素材交错分行：左上横屏视频 / 右中工牌照 / 左下个人照；后出现者压在上层 */
+/* 左上：横屏视频（最先出现，最下层） */
+.fx-card--video{width:48%;left:0;top:3%;aspect-ratio:16/10;--rot:-6deg;z-index:3}
+/* 右中：工牌照（竖图，原图人像侧躺，图片自身顺时针旋转 90° 正立） */
+.fx-card--badge{width:26%;right:2%;top:32%;aspect-ratio:4/5;--rot:7deg;z-index:4}
 .fx-card--badge img{transform:rotate(90deg) scale(1.25)}
-/* 第三张照片放中下方，水平避开视频（视频占左侧），不与视频重合 */
-.fx-card--photo{width:26%;left:36%;bottom:0;aspect-ratio:4/5;--rot:-5deg;z-index:2}
+/* 左下：个人照（竖图，最后出现，最上层） */
+.fx-card--photo{width:26%;left:5%;bottom:0;aspect-ratio:4/5;--rot:-5deg;z-index:5}
 .js .fx-card{opacity:0}
 @media(max-width:860px){
   .fx-card--video{width:74%;left:0;top:2%;--rot:-5deg}
-  .fx-card--badge{width:42%;right:1%;top:44%;--rot:7deg}
+  .fx-card--badge{width:42%;right:1%;top:38%;--rot:7deg}
   .fx-card--photo{width:46%;left:2%;bottom:0;--rot:-5deg}
 }
 
@@ -547,8 +552,8 @@ a:active{opacity:.7}
   .sec-title{font-size:clamp(2rem,7vh,3.6rem)}
   /* 剧场：恢复左右双栏 */
   .theater{height:340vh}
-  .theater-grid{grid-template-columns:minmax(0,1.35fr) minmax(0,.65fr);grid-template-rows:auto;gap:1.5rem;
-    padding-top:calc(var(--nav-h) + 1vh)}
+  .theater-grid{grid-template-columns:minmax(0,1.35fr) minmax(0,.65fr);grid-template-rows:1fr;gap:1.5rem;
+    padding-top:calc(var(--nav-h) + 1vh);padding-bottom:0}
   .theater-copy{justify-content:center}
   .theater-top{justify-content:flex-start;gap:.7em;letter-spacing:.18em;font-size:1.05rem}
   .theater-mid{margin:1.2rem 0}
