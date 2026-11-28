@@ -426,6 +426,9 @@ a:active{opacity:.7}
   .media-grid{border-top:0;border-left:0}
   .gcell--tr,.gcell--title.font-4,.gcell--title.font-6,.gcell--title.font-5{border-right:0}
   .gcell--bl,.gcell--title.font-5{border-bottom:0}
+  /* 竖屏左下视频格只留左边那个视频、居中（隐藏图片和第3个视频；第3个已被 max-width:860 规则隐藏） */
+  .gcell--bl .gcell-duo picture,.gcell--bl .gcell-duo img{display:none!important}
+  .gcell--bl .gcell-duo{justify-content:center}
   /* 竖屏舞蹈网格 2 列：第二行 gif 与静态图调换（photo2 左 / dance2 右） */
   .dance-grid>.dance-card:nth-child(1){order:1}
   .dance-grid>.dance-card:nth-child(2){order:2}
